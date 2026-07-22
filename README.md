@@ -7,7 +7,7 @@ O dashboard foi projetado para atender aos seguintes pontos estratégicos do tim
 3. **Desempenho Orgânico vs. Pago:** Isolar dados orgânicos provenientes de páginas do **Facebook** e **Instagram** para entender o alcance genuíno da marca.
 4. **Tomada de Decisão Criativa:** Identificar quais formatos (Reels, Carrossel, Imagem Única) e editorias de conteúdo apresentam os melhores índices de retenção e salvamentos.
 
-## 📐 Métricas e KPIs Mapeados
+## 📐  KPIs Mapeados
 
 O painel reúne indicadores divididos em três pilares fundamentais para o time de Social:
 
@@ -28,7 +28,7 @@ O painel reúne indicadores divididos em três pilares fundamentais para o time 
 
 ---
 
-## 🏗️ Arquitetura de Dados & Integração
+### 🏗️ Arquitetura de Dados & Integração
 
 * **Fontes de Dados:** Arquivos JSON extraídos do **Google Cloud Storage / BigQuery** originados da Graph API da Meta (`facebook_page` e `instagram_pages`).
 * **Estrutura Normalizada:** Modelo de dados unificado com identificação de plataforma (`Facebook` / `Instagram`) para garantir escalabilidade.
@@ -36,7 +36,7 @@ O painel reúne indicadores divididos em três pilares fundamentais para o time 
 
 ---
 
-##  Como Abrir e Visualizar o Projeto
+###  Como Abrir e Visualizar o Projeto
 
 ### Opção 1: Acesso Online (GitHub Pages)
 O projeto está hospedado gratuitamente e pronto para visualização online. Acesse através do link público disponibilizado:
@@ -58,7 +58,7 @@ Caso queira rodar o projeto localmente no seu computador:
 
 ---
 
-## 🔒Segurança de Dados
+### 🔒Segurança de Dados
 
 Por se tratar de um repositório público no GitHub:
 * Confidencialidade: NENHUM dado real, sensível ou confidencial de clientes da agência deve ser enviado ao repositório.
