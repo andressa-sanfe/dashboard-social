@@ -56,20 +56,6 @@ Caso queira rodar o projeto localmente no seu computador:
 3. **Executar:**
    Basta dar um duplo clique no arquivo `index.html` ou abri-lo diretamente em qualquer navegador moderno (Chrome, Edge, Firefox, Safari). Nenhuma instalação ou servidor web adicional é necessário!
 
-## 📁 Estrutura do Repositório
-
-```text
-.
-├── index.html          # Interface principal e estrutura do dashboard
-├── css/
-│   └── style.css       # Estilização visual e responsividade
-├── js/
-│   └── main.js         # Lógica de manipulação dos dados e gráficos
-├── data/
-│   └── mock_data.json  # Arquivo de dados fictícios para demonstração
-└── README.md           # Documentação completa do projeto
-```
-
 ---
 
 ## 🔒Segurança de Dados
