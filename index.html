@@ -1,553 +1,497 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Social</title>
+<title>Social Signal — Painel de Performance</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap');
-
 :root{
-  --ink:#14231D; --ink-soft:#4A5B52; --paper:#F6F4EE; --panel:#FFFFFF;
-  --pine:#1E5847; --pine-soft:#3F7A66;
-  --signal:#E0A82E;            /* orgânico = valor */
-  --signal-deep:#B8811A;
-  --noise:#B4BCB4;             /* pago/vaidade = ruído (propositalmente apagado) */
-  --clay:#BC5138;             /* negativo / alerta */
-  --line:#E4E1D7; --line-2:#EEEBE2;
-  --sans:'IBM Plex Sans',system-ui,sans-serif;
-  --disp:'Space Grotesk',system-ui,sans-serif;
-  --mono:'Spline Sans Mono',ui-monospace,monospace;
+  --ink:#1C2A39;--ink-soft:#5A6675;--paper:#F8FAFB;--panel:#FFFFFF;
+  --pine:#2E5EAA;--pine-soft:#5B84C7;
+  --signal:#A4D65E;--signal-deep:#5E9E1E;
+  --noise:#9AA3AB;
+  --pos:#4E8E2C;--pos-bg:rgba(78,142,44,.14);
+  --neg:#D0503A;--neg-bg:rgba(208,80,58,.13);
+  --line:#E4E8EC;--line-2:#EEF1F4;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;--disp:'Space Grotesk',system-ui,sans-serif;--mono:'Spline Sans Mono',ui-monospace,monospace;
+  --side:236px;
 }
-*{box-sizing:border-box}
-html,body{margin:0}
-body{
-  background:var(--paper); color:var(--ink); font-family:var(--sans);
-  font-size:14px; line-height:1.45; -webkit-font-smoothing:antialiased;
-  padding:0 22px 60px;
-}
-.wrap{max-width:1240px;margin:0 auto}
-a{color:inherit}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
 .mono{font-family:var(--mono)}
-.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.app{display:grid;grid-template-columns:var(--side) 1fr;min-height:100vh}
 
-/* ---------- top bar ---------- */
-header{
-  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-  padding:22px 0 18px;border-bottom:1px solid var(--line);margin-bottom:26px;
-  position:sticky;top:0;background:var(--paper);z-index:20;
-}
-.brand{display:flex;align-items:baseline;gap:12px}
-.brand .logo{
-  font-family:var(--disp);font-weight:700;font-size:20px;letter-spacing:-.02em;
-  display:flex;align-items:center;gap:9px;color:var(--ink);
-}
-.brand .logo .dot{width:12px;height:12px;border-radius:50%;
-  background:conic-gradient(from 210deg,var(--signal),var(--pine),var(--signal));display:inline-block}
-.brand .client{font-size:12px;color:var(--ink-soft);border-left:1px solid var(--line);padding-left:12px}
-.brand .client b{color:var(--ink);font-weight:600}
-.controls{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel)}
-.seg button{
-  font-family:var(--sans);font-size:12.5px;font-weight:500;border:0;background:transparent;
-  padding:8px 14px;cursor:pointer;color:var(--ink-soft);display:flex;align-items:center;gap:7px;transition:.15s
-}
-.seg button .pip{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.55}
-.seg button.on{background:var(--ink);color:#fff}
-.seg button.soon{cursor:not-allowed;opacity:.55}
-.seg button.soon .tag{font-family:var(--mono);font-size:9px;background:var(--line);color:var(--ink-soft);
-  padding:1px 5px;border-radius:4px;letter-spacing:.04em}
-.pill{font-family:var(--mono);font-size:11px;padding:7px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink-soft)}
-.proto{background:var(--signal);color:var(--ink);border-color:var(--signal-deep);font-weight:600}
+/* ---------- SIDEBAR ---------- */
+aside{background:var(--ink);color:#D6DCE4;padding:20px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.logo{font-family:var(--disp);font-weight:700;font-size:18px;letter-spacing:-.02em;color:#fff;display:flex;align-items:center;gap:9px;padding:2px 6px 16px}
+.logo .dot{width:12px;height:12px;border-radius:50%;background:conic-gradient(from 210deg,var(--signal),var(--pine-soft),var(--signal))}
+.side-lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7A8698;padding:14px 8px 6px}
+.page-btn{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;border:1px solid transparent;font-size:13px;transition:.14s}
+.page-btn .ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:12px;color:#fff}
+.page-btn.fb .ic{background:#2E5EAA}.page-btn.ig .ic{background:linear-gradient(135deg,#C9448A,#A4D65E)}
+.page-btn.on{background:#263449;border-color:#34455E}
+.page-btn.soon{opacity:.55}
+.page-btn .soon-tag{margin-left:auto;font-family:var(--mono);font-size:8.5px;background:#34455E;color:#96A2B2;padding:2px 6px;border-radius:5px;letter-spacing:.04em}
+.page-btn .foll{margin-left:auto;font-family:var(--mono);font-size:10px;color:#7A8698}
+.nav-btn{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:9px;cursor:pointer;color:#AEB8C6;font-size:13.5px;border-left:2px solid transparent;transition:.14s}
+.nav-btn:hover{background:#212F45;color:#EAEEF4}
+.nav-btn.on{background:#263449;color:#fff;border-left-color:var(--signal)}
+.nav-btn .gl{width:15px;text-align:center;opacity:.85;font-size:13px}
+.period{margin-top:auto;padding:12px 10px 2px;border-top:1px solid #2A3A52;font-family:var(--mono);font-size:10.5px;color:#8792A2;line-height:1.6}
+.period b{color:#D6DCE4;font-weight:500}
 
-/* ---------- hero ---------- */
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel);margin-bottom:28px}
-.hero-l{padding:30px 32px 28px;position:relative}
-.hero-l .q{font-family:var(--disp);font-size:15px;font-weight:500;color:var(--ink-soft);max-width:33ch;margin:0 0 20px}
-.vri{display:flex;align-items:flex-end;gap:16px}
-.vri .num{font-family:var(--disp);font-weight:700;font-size:82px;line-height:.82;letter-spacing:-.04em}
-.vri .of{font-family:var(--mono);font-size:13px;color:var(--ink-soft);padding-bottom:9px}
-.vri .delta{font-family:var(--mono);font-size:12px;font-weight:500;padding:3px 8px;border-radius:6px;margin-bottom:11px}
-.up{background:rgba(30,88,71,.1);color:var(--pine)}
-.down{background:rgba(188,81,56,.12);color:var(--clay)}
-.hero-l .label{margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--signal-deep);font-weight:600}
-.hero-l .desc{font-size:12.5px;color:var(--ink-soft);max-width:44ch;margin-top:7px}
-.spark{margin-top:20px}
-.hero-r{background:var(--ink);color:#EBE9E0;padding:26px 28px;display:flex;flex-direction:column}
-.hero-r h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;margin:0 0 4px;color:#B9C4BD;font-weight:500}
-.hero-r .sn-sub{font-size:12px;color:#8FA096;margin-bottom:20px;max-width:34ch}
-.snbar{margin-bottom:16px}
-.snbar .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.snbar .top .n{font-family:var(--disp);font-size:12.5px;font-weight:500}
-.snbar .top .v{font-family:var(--mono);font-size:11.5px;color:#B9C4BD}
-.track{height:9px;border-radius:5px;background:#26372F;overflow:hidden;display:flex}
-.track .sig{background:var(--signal)}
-.track .noi{background:#5C6B62}
-.snlegend{margin-top:auto;display:flex;gap:16px;font-size:11px;color:#8FA096;padding-top:16px;border-top:1px solid #26372F}
-.snlegend span{display:flex;align-items:center;gap:6px}
-.snlegend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+/* ---------- MAIN ---------- */
+main{padding:26px 30px 60px;max-width:1180px}
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.topbar h1{font-family:var(--disp);font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0}
+.topbar .crumb{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.topbar .cmp{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-soft);background:var(--panel);border:1px solid var(--line);padding:7px 12px;border-radius:9px}
+.topbar .cmp b{color:var(--ink)}
+.proto{font-family:var(--mono);font-size:11px;background:var(--signal);color:var(--ink);border:1px solid var(--signal-deep);padding:7px 12px;border-radius:9px;font-weight:600}
 
-/* ---------- section headings ---------- */
-.sec-h{display:flex;align-items:baseline;gap:14px;margin:34px 2px 14px}
-.sec-h .idx{font-family:var(--mono);font-size:12px;color:var(--signal-deep);font-weight:600}
-.sec-h h2{font-family:var(--disp);font-size:19px;font-weight:600;letter-spacing:-.02em;margin:0}
-.sec-h .sub{font-size:12px;color:var(--ink-soft);margin-left:auto;max-width:46ch;text-align:right}
+.view{display:none}.view.on{display:block}
 
-/* ---------- cards grid ---------- */
-.grid{display:grid;gap:16px}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g2{grid-template-columns:1.05fr .95fr}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 19px}
-.card .k-top{display:flex;align-items:center;gap:8px;margin-bottom:14px}
-.card .k-name{font-family:var(--disp);font-size:13px;font-weight:600}
+/* delta chip */
+.chip{font-family:var(--mono);font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.chip.pos{background:var(--pos-bg);color:var(--pos)}
+.chip.neg{background:var(--neg-bg);color:var(--neg)}
+.chip.neu{background:var(--line-2);color:var(--ink-soft)}
+
+/* grids + cards */
+.grid{display:grid;gap:15px}
+.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}
+.g21{grid-template-columns:1.1fr .9fr}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:17px 18px}
+.card h3{font-family:var(--disp);font-size:13px;font-weight:600;margin:0 0 3px;display:flex;align-items:center;gap:8px}
 .badge{font-family:var(--mono);font-size:9px;letter-spacing:.05em;padding:2px 6px;border-radius:5px;font-weight:500}
-.b-fb{background:rgba(30,88,71,.1);color:var(--pine)}
-.b-ig{background:rgba(224,168,46,.16);color:var(--signal-deep)}
-.b-org{background:var(--ink);color:var(--signal);}
-.k-val{font-family:var(--disp);font-weight:700;font-size:38px;line-height:1;letter-spacing:-.03em;display:flex;align-items:baseline;gap:8px}
-.k-val .unit{font-size:16px;color:var(--ink-soft);font-weight:500}
-.k-sub{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-top:9px}
-.k-formula{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);margin-top:12px;padding-top:11px;border-top:1px dashed var(--line);line-height:1.5}
-.k-formula b{color:var(--ink);font-weight:600}
-.trend-dl{font-family:var(--mono);font-size:11px;font-weight:500;margin-top:10px}
+.b-fb{background:rgba(46,94,170,.12);color:var(--pine)}.b-org{background:var(--ink);color:var(--signal)}.b-ig{background:rgba(164,214,94,.22);color:var(--signal-deep)}
+.kpi .val{font-family:var(--disp);font-weight:700;font-size:34px;line-height:1;letter-spacing:-.03em;margin:10px 0 8px;display:flex;align-items:baseline;gap:6px}
+.kpi .val .u{font-size:15px;color:var(--ink-soft);font-weight:500}
+.kpi .foot{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+.kpi .spark{margin-top:12px}
+.kpi.nd .val{color:var(--noise)}
+.kpi.nd{background:repeating-linear-gradient(135deg,#FCFDFE,#FCFDFE 10px,#F8FAFB 10px,#F8FAFB 20px)}
+.hint{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:9px}
+.hint b{color:var(--signal-deep)}
 
-/* N/D (save no FB) */
-.card.nd{background:repeating-linear-gradient(135deg,#FBFAF6,#FBFAF6 10px,#F6F4EE 10px,#F6F4EE 20px)}
-.card.nd .k-val{color:var(--noise)}
-.nd-note{font-size:11.5px;color:var(--ink-soft);margin-top:9px;line-height:1.5}
-.nd-note b{color:var(--signal-deep)}
+/* hero / decisions */
+.hero{display:grid;grid-template-columns:.95fr 1.05fr;gap:15px;margin-bottom:15px}
 
-/* ---------- retention funnel ---------- */
-.funnel{display:flex;flex-direction:column;gap:9px;margin-top:4px}
-.frow{display:grid;grid-template-columns:120px 1fr 96px;align-items:center;gap:12px}
-.frow .fl{font-size:12px;color:var(--ink)}
-.frow .fl small{display:block;color:var(--ink-soft);font-family:var(--mono);font-size:9.5px}
-.fbar{height:26px;background:var(--line-2);border-radius:6px;overflow:hidden}
-.fbar > div{height:100%;background:linear-gradient(90deg,var(--pine),var(--pine-soft));display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font-family:var(--mono);font-size:11px;border-radius:6px;transition:width .8s cubic-bezier(.2,.7,.2,1)}
-.frow .fv{font-family:var(--mono);font-size:12px;text-align:right;color:var(--ink-soft)}
-.frow .fv b{color:var(--ink)}
-.wtnote{margin-top:16px;padding:13px 15px;background:var(--paper);border-radius:10px;font-size:12px;color:var(--ink-soft);border:1px solid var(--line)}
-.wtnote b{color:var(--ink)}
+/* decision callout */
+.decision{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 19px}
+.decision .dh{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.decision .dh .tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;background:var(--signal);color:var(--ink);padding:2px 7px;border-radius:5px;font-weight:600}
+.decision h3{font-family:var(--disp);font-size:15px;font-weight:600;margin:0}
+.decision .ans{font-size:13px;color:var(--ink-soft);margin:8px 0 14px}
+.decision .ans b{color:var(--ink)}
 
-/* ---------- sentiment ---------- */
-.senti{margin-top:6px}
-.senti .bar{height:34px;border-radius:8px;overflow:hidden;display:flex}
-.senti .bar > div{display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--mono);font-size:11px}
-.senti .leg{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:14px;font-size:12px}
-.senti .leg span{display:flex;align-items:center;gap:7px;color:var(--ink-soft)}
-.senti .leg i{width:10px;height:10px;border-radius:3px}
-.senti .leg b{color:var(--ink);font-family:var(--mono);font-weight:500}
+/* signal vs noise bars */
+.snbar{margin-bottom:13px}
+.snbar .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:12px}
+.snbar .top .v{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.track{height:11px;border-radius:6px;background:var(--line-2);overflow:hidden;display:flex}
+.track .sig{background:var(--signal)}.track .noi{background:#68727A}
+.snleg{display:flex;gap:16px;font-size:11px;color:var(--ink-soft);margin-top:4px}
+.snleg span{display:flex;align-items:center;gap:6px}.snleg i{width:9px;height:9px;border-radius:2px}
 
-/* ---------- mini stat rows ---------- */
-.statrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line-2)}
-.statrow:last-child{border-bottom:0}
-.statrow .sl{font-size:12.5px;color:var(--ink)}
-.statrow .sl small{display:block;color:var(--ink-soft);font-size:10.5px;font-family:var(--mono)}
-.statrow .sv{font-family:var(--disp);font-size:19px;font-weight:600}
+/* format bars (retention correlation) */
+.fmtrow{display:grid;grid-template-columns:88px 1fr 116px;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.fmtrow:last-child{border:0}
+.fmtrow .fn{font-family:var(--disp);font-size:13px;font-weight:600}
+.fmtrow .fn small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--ink-soft);font-weight:400}
+.mbar{height:22px;border-radius:6px;background:var(--line-2);overflow:hidden;position:relative}
+.mbar > div{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-family:var(--mono);font-size:10.5px;color:#fff;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.fmtrow .fscore{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.fmtrow .fscore b{font-family:var(--disp);font-size:17px;font-weight:600;width:26px;text-align:right}
 
-/* ---------- table ---------- */
+/* funnel */
+.funnel{display:flex;flex-direction:column;gap:8px}
+.frow{display:grid;grid-template-columns:110px 1fr 74px;align-items:center;gap:12px}
+.frow .fl{font-size:12px}.frow .fl small{display:block;color:var(--ink-soft);font-family:var(--mono);font-size:9px}
+.fbar{height:24px;background:var(--line-2);border-radius:6px;overflow:hidden}
+.fbar>div{height:100%;background:linear-gradient(90deg,var(--pine),var(--pine-soft));display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-family:var(--mono);font-size:10.5px;border-radius:6px}
+.frow .fv{font-family:var(--mono);font-size:12px;text-align:right}.frow .fv b{}
+
+/* stat rows */
+.statrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2)}.statrow:last-child{border:0}
+.statrow .sl{font-size:12.5px;flex:0 0 auto;min-width:96px}.statrow .sl small{display:block;color:var(--ink-soft);font-family:var(--mono);font-size:10px}
+.statrow .track{flex:1}
+.statrow .sv{font-family:var(--disp);font-size:16px;font-weight:600;width:44px;text-align:right}
+
+/* scatter (boost decision) */
+.scatter-wrap{position:relative}
+.axl{font-family:var(--mono);font-size:10px;color:var(--ink-soft)}
+
+/* sentiment */
+.convo-head{display:grid;grid-template-columns:1fr 150px 88px;gap:14px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);padding-bottom:9px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.convo-head span:not(:first-child){text-align:right}
+.convo-row{display:grid;grid-template-columns:1fr 150px 88px;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-2)}
+.convo-row:last-of-type{border-bottom:0}
+.convo-row .cn{font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.convo-row .cn .fmt{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:5px;background:var(--line-2);color:var(--ink-soft);margin-right:8px}
+.convo-row .cbar{height:22px;background:var(--line-2);border-radius:6px;overflow:hidden}
+.convo-row .cbar>div{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-family:var(--mono);font-size:11px;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.convo-row .crate{font-family:var(--disp);font-size:17px;font-weight:600;text-align:right;color:var(--ink-soft)}
+.convo-row .crate.hot{color:var(--pine)}
+.convo-row .crate .dotmark{font-size:9px;color:var(--signal-deep);vertical-align:middle}
+.convo-note{font-family:var(--mono);font-size:10.5px;color:var(--signal-deep);margin-top:12px}
+
+/* table */
 .tablewrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
 table{border-collapse:collapse;width:100%;font-size:12.5px}
-thead th{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);text-align:right;padding:13px 14px;background:var(--paper);border-bottom:1px solid var(--line);font-weight:500;cursor:pointer;user-select:none;white-space:nowrap}
-thead th.l{text-align:left}
-thead th .arw{opacity:.35;margin-left:3px}
-thead th.act .arw{opacity:1;color:var(--signal-deep)}
-tbody td{padding:13px 14px;text-align:right;border-bottom:1px solid var(--line-2);font-family:var(--mono);color:var(--ink)}
-tbody tr:last-child td{border-bottom:0}
-tbody tr:hover{background:var(--paper)}
-td.post{text-align:left;font-family:var(--sans);max-width:280px}
-td.post .fmt{font-family:var(--mono);font-size:9.5px;padding:2px 6px;border-radius:5px;background:var(--line-2);color:var(--ink-soft);margin-right:8px}
-td.post .msg{color:var(--ink-soft);font-size:11.5px;display:block;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px}
-.vscore{display:inline-flex;align-items:center;gap:8px;justify-content:flex-end}
-.vscore .mtr{width:46px;height:6px;border-radius:3px;background:var(--line-2);overflow:hidden}
-.vscore .mtr > div{height:100%;border-radius:3px}
-.vscore b{font-family:var(--disp);font-size:14px;font-weight:600;width:26px;text-align:right}
+thead th{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);text-align:right;padding:12px 13px;background:var(--paper);border-bottom:1px solid var(--line);font-weight:500;cursor:pointer;white-space:nowrap;user-select:none}
+thead th.l{text-align:left}thead th.act{color:var(--signal-deep)}
+tbody td{padding:11px 13px;text-align:right;border-bottom:1px solid var(--line-2);font-family:var(--mono)}
+tbody tr:last-child td{border:0}tbody tr:hover{background:var(--paper)}
+td.post{text-align:left;font-family:var(--sans);max-width:230px}
+td.post .fmt{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:5px;background:var(--line-2);color:var(--ink-soft);margin-right:7px}
+td.post .msg{color:var(--ink-soft);font-size:11px;display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.boostflag{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:5px;font-weight:600}
+.boost-yes{background:var(--signal);color:var(--ink)}.boost-no{background:var(--line-2);color:var(--ink-soft)}
 
-/* ---------- methodology ---------- */
-.method{margin-top:34px;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
-.method summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:center;gap:12px;font-family:var(--disp);font-weight:600;font-size:15px}
-.method summary::-webkit-details-marker{display:none}
-.method summary .chev{margin-left:auto;font-family:var(--mono);color:var(--ink-soft);transition:.2s}
-.method[open] summary .chev{transform:rotate(90deg)}
-.method .body{padding:4px 22px 24px;border-top:1px solid var(--line)}
-.method h5{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--signal-deep);margin:22px 0 10px}
-.method p{font-size:12.5px;color:var(--ink-soft);max-width:78ch;margin:0 0 10px}
-.method code{font-family:var(--mono);font-size:11.5px;background:var(--paper);padding:2px 6px;border-radius:5px;color:var(--ink);border:1px solid var(--line)}
-.maptable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
-.maptable th,.maptable td{text-align:left;padding:9px 12px;border:1px solid var(--line)}
-.maptable th{background:var(--paper);font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);font-weight:500}
-.maptable td{font-family:var(--mono);font-size:11px;color:var(--ink)}
-.maptable td.metric{font-family:var(--sans);font-weight:600;color:var(--ink)}
-.maptable td.na{color:var(--clay)}
+.soon-panel{background:var(--panel);border:1px dashed var(--line);border-radius:16px;padding:44px;text-align:center;color:var(--ink-soft)}
+.soon-panel .big{font-family:var(--disp);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.soon-panel code{font-family:var(--mono);font-size:12px;background:var(--paper);border:1px solid var(--line);padding:2px 7px;border-radius:5px}
 
-footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;color:var(--ink-soft);font-family:var(--mono);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.sec-lead{font-size:13px;color:var(--ink-soft);max-width:64ch;margin:0 0 16px}
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 
-@media(max-width:880px){
-  .hero{grid-template-columns:1fr}
-  .g3,.g2{grid-template-columns:1fr}
-  .sec-h .sub{display:none}
-  .frow{grid-template-columns:96px 1fr 70px}
-  .vri .num{font-size:64px}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;gap:6px;align-items:center}
+  aside .side-lbl,aside .period{display:none}
+  .logo{padding:0 10px 0 6px}
+  .hero,.g4,.g3,.g2,.g21{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
-<div class="wrap">
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="logo"><span class="dot"></span>Social Signal</div>
 
-  <header>
-    <div class="brand">
-      <div class="logo"><span class="dot"></span>Social Signal</div>
-      <div class="client">Cliente <b>Atacadão SA</b> · Painel de conteúdo</div>
-    </div>
-    <div class="controls">
-      <div class="seg" id="platform">
-        <button class="on" data-p="fb"><span class="pip"></span>Facebook</button>
-        <button class="soon" data-p="ig" title="Habilita quando a extração do Instagram entrar"><span class="pip"></span>Instagram <span class="tag">em breve</span></button>
+    <div class="side-lbl">Páginas</div>
+    <div class="page-btn fb on" data-page="fb"><span class="ic">f</span>Atacadão SA<span class="foll">4,4M</span></div>
+    <div class="page-btn ig soon" data-page="ig"><span class="ic">◎</span>@atacadaosa<span class="soon-tag">em breve</span></div>
+
+    <div class="side-lbl">Seções</div>
+    <div class="nav-btn on" data-view="overview"><span class="gl">◆</span>Visão geral</div>
+    <div class="nav-btn" data-view="retencao"><span class="gl">▮</span>Retenção</div>
+    <div class="nav-btn" data-view="engajamento"><span class="gl">✦</span>Engajamento</div>
+    <div class="nav-btn" data-view="comunidade"><span class="gl">◗</span>Comunidade</div>
+    <div class="nav-btn" data-view="conteudo"><span class="gl">≡</span>Conteúdo</div>
+
+    <div class="period">Período<br><b>1–30 jan 2026</b><br>vs 1–31 dez 2025</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="topbar">
+      <div>
+        <div class="crumb" id="crumb">Facebook · Atacadão SA</div>
+        <h1 id="viewTitle">Visão geral</h1>
       </div>
-      <span class="pill">Últimos 30 dias</span>
-      <span class="pill proto">dados de protótipo</span>
+      <span class="cmp">30 dias vs <b>período anterior</b></span>
+      <span class="proto">protótipo</span>
     </div>
-  </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-l">
-    
-      <div class="vri">
-        <div class="num" id="vriNum">68</div>
-        <div class="of">/100</div>
-        <div class="delta up" id="vriDelta">▲ 6,2 pts</div>
+    <!-- ===== VISÃO GERAL ===== -->
+    <section class="view on" data-view="overview">
+      <div class="grid g4" id="kpiStrip" style="margin-bottom:15px"></div>
+
+      <div class="grid g2" style="margin-bottom:15px">
+        <div class="decision">
+          <div class="dh"><span class="tag">decisão</span><h3>Vale impulsionar?</h3></div>
+          <div id="snBars" style="margin-top:6px"></div>
+          <div class="snleg"><span><i style="background:var(--signal)"></i>Orgânico</span><span><i style="background:#68727A"></i>Pago</span></div>
+        </div>
+        <div class="decision">
+          <div class="dh"><span class="tag">decisão</span><h3>Qual formato engaja mais? <span class="badge b-org">orgânico</span></h3></div>
+          <div id="fmtBars" style="margin-top:6px"></div>
+        </div>
       </div>
-      <div class="label">Índice de Valor Real · orgânico</div>
 
-      <div class="spark" id="spark"></div>
-    </div>
-    <div class="hero-r">
-      <h4>Sinal vs Ruído</h4>
-      <div class="sn-sub">Quanto do alcance é orgânico vs. impulsionado.</div>
-      <div id="snBars"></div>
-      <div class="snlegend">
-        <span><i style="background:var(--signal)"></i> Orgânico</span>
-        <span><i style="background:#5C6B62"></i> Pago / impulsionado</span>
+      <div class="card">
+        <h3>Alcance × engajamento (orgânico)</h3>
+        <div id="reachEngScatter" style="margin-top:6px"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 1 · CONEXÃO & RETENÇÃO -->
-  <div class="sec-h">
-    <span class="idx">01</span>
-    <h2>Conexão &amp; Retenção</h2>
+    <!-- ===== RETENÇÃO ===== -->
+    <section class="view" data-view="retencao">
+      <div class="grid g4" id="retKpis" style="margin-bottom:15px"></div>
+      <div class="grid g2" style="margin-bottom:15px">
+        <div class="card">
+          <h3>Retenção de vídeo <span class="badge b-org">orgânico</span></h3>
+          <div class="funnel" id="funnel" style="margin-top:8px"></div>
+        </div>
+        <div class="card">
+          <h3>Onde a atenção quebra <span class="badge b-org">orgânico</span></h3>
+          <div id="dropoff" style="margin-top:10px"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Retenção de vídeo por formato</h3>
+        <div id="watchByFmt" style="margin-top:6px"></div>
+      </div>
+    </section>
 
-  </div>
-  <div class="grid g3" style="margin-bottom:16px">
-    <div class="card">
-      <div class="k-top"><span class="k-name">Share rate</span><span class="badge b-fb">FB</span><span class="badge b-org">ORG</span></div>
-      <div class="k-val" id="shareRate">1,9<span class="unit">%</span></div>
-      <div class="trend-dl up mono">▲ 0,4 pp vs. período anterior</div>
-      <div class="k-formula"><b>shares</b> ÷ <b>alcance orgânico</b><br>share_count / post_impressions_organic</div>
-    </div>
-    <div class="card nd" id="saveCard">
-      <div class="k-top"><span class="k-name">Save rate</span><span class="badge b-ig">IG</span></div>
-      <div class="k-val" id="saveVal">N/D</div>
-      <div class="nd-note" id="saveNote">O Facebook não expõe <b>saves</b>. Métrica habilita automaticamente com a extração do Instagram (<code style="font-family:var(--mono)">saved</code> no insights de mídia).</div>
-    </div>
-    <div class="card">
-      <div class="k-top"><span class="k-name">Watch time médio</span><span class="badge b-fb">FB</span><span class="badge b-org">ORG</span></div>
-      <div class="k-val" id="watchAvg">14,3<span class="unit">s</span></div>
-      <div class="k-sub" id="watchPct">49% da duração média (29s)</div>
-      <div class="k-formula"><b>post_video_view_time_organic</b> ÷ views orgânicas</div>
-    </div>
-  </div>
+    <!-- ===== ENGAJAMENTO ===== -->
+    <section class="view" data-view="engajamento">
+      <div class="grid g3" id="engKpis" style="margin-bottom:15px"></div>
+      <div class="grid g2">
+        <div class="card">
+          <h3>Taxa de engajamento · 30 dias <span class="badge b-org">orgânico</span></h3>
+          <div id="engTrend" style="margin-top:10px"></div>
+        </div>
+        <div class="card">
+          <h3>Composição</h3>
+          <div id="engMix" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </section>
 
-  <div class="grid g2">
-    <div class="card">
-      <div class="k-top"><span class="k-name">Curva de retenção de vídeo</span><span class="badge b-org">ORG</span></div>
-      <div class="funnel" id="funnel"></div>
-      <div class="wtnote" id="wtnote"></div>
-    </div>
-    <div class="card">
-      <div class="k-top"><span class="k-name">Onde a atenção quebra</span></div>
-      <div style="font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;max-width:40ch">Retenção por etapa. </div>
-      <div id="dropoff"></div>
-    </div>
-  </div>
+    <!-- ===== COMUNIDADE ===== -->
+    <section class="view" data-view="comunidade">
+      <div class="grid g3" id="commKpis" style="margin-bottom:15px"></div>
+      <div class="card">
+        <h3>Onde está a conversa <span class="badge b-fb">Facebook</span></h3>
+        <div id="convoByPost" style="margin-top:8px"></div>
+      </div>
+    </section>
 
-  <!-- 2 · ENGAJAMENTO QUALIFICADO -->
-  <div class="sec-h">
-    <span class="idx">02</span>
-    <h2>Engajamento Qualificado</h2>
-    
-  </div>
-  <div class="grid g2">
-    <div class="card">
-      <div class="k-top"><span class="k-name">Taxa de engajamento / alcance orgânico</span><span class="badge b-fb">FB</span><span class="badge b-org">ORG</span></div>
-      <div class="k-val" id="engRate">4,6<span class="unit">%</span></div>
-      <div class="trend-dl up mono">▲ 0,7 pp — 30 dias</div>
-      <div id="engChart" style="margin-top:16px"></div>
-      <div class="k-formula"><b>(reações + comentários + shares + cliques)</b> ÷ <b>post_impressions_organic</b><br>Interações somadas de <code style="font-family:var(--mono)">post_activity</code>, denominador orgânico isolado.</div>
-    </div>
-    <div class="card">
-      <div class="k-top"><span class="k-name">Composição do engajamento</span></div>
-    
-      <div id="engMix"></div>
-    </div>
-  </div>
+    <!-- ===== CONTEÚDO ===== -->
+    <section class="view" data-view="conteudo">
+      <div class="tablewrap">
+        <table id="postTable">
+          <thead><tr>
+            <th class="l">Post</th>
+            <th data-k="reachOrg">Alcance</th>
+            <th data-k="share">Compart.</th>
+            <th data-k="save">Salvos</th>
+            <th data-k="watch">Retenção</th>
+            <th data-k="eng">Engajamento</th>
+            <th class="l" data-k="boost">Impulsionar?</th>
+          </tr></thead>
+          <tbody id="postBody"></tbody>
+        </table>
+      </div>
+    </section>
 
-  <!-- 3 · COMMUNITY MANAGEMENT -->
-  <div class="sec-h">
-    <span class="idx">03</span>
-    <h2>Community Management</h2>
-  </div>
-  <div class="grid g3">
-    <div class="card">
-      <div class="k-top"><span class="k-name">Comentários no período</span><span class="badge b-fb">FB</span></div>
-      <div class="k-val" id="comments">1.284</div>
-      <div class="k-sub">média 18,3 por post · pico em Black Week</div>
-      <div class="k-formula">soma de <b>comment_count</b> por post</div>
-    </div>
-    <div class="card">
-      <div class="k-top"><span class="k-name">Talking about</span><span class="badge b-fb">FB</span></div>
-      <div class="k-val" id="talking">32,2<span class="unit">k</span></div>
-      <div class="k-sub">pessoas gerando história sobre a página</div>
-      <div class="k-formula"><b>talking_about_count</b> (perfil)</div>
-    </div>
-    <div class="card">
-      <div class="k-top"><span class="k-name">Novos seguidores / dia</span><span class="badge b-fb">FB</span><span class="badge b-org">ORG</span></div>
-      <div class="k-val" id="follows">+2.081</div>
-      <div class="trend-dl up mono">crescimento diário médio</div>
-      <div class="k-formula"><b>page_daily_follows</b></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:16px">
-    <div class="k-top"><span class="k-name">Sentimento das reações</span><span class="badge b-fb">FB</span></div>
-    <div class="senti">
-      <div class="bar" id="sentiBar"></div>
-      <div class="leg" id="sentiLeg"></div>
-    </div>
-  </div>
-
-  <!-- 4 · CONTENT RANKING -->
-  <div class="sec-h">
-    <span class="idx">04</span>
-    <h2>Ranking de conteúdo por Valor Real</h2>
-    
-  </div>
-  <div class="tablewrap">
-    <table id="postTable">
-      <thead>
-        <tr>
-          <th class="l">Post</th>
-          <th data-k="reach">Alcance org.<span class="arw">↕</span></th>
-          <th data-k="share">Share rate<span class="arw">↕</span></th>
-          <th data-k="save">Save rate<span class="arw">↕</span></th>
-          <th data-k="watch">Watch-thru<span class="arw">↕</span></th>
-          <th data-k="eng">Eng. org.<span class="arw">↕</span></th>
-          <th class="act" data-k="vri">Valor Real<span class="arw">↕</span></th>
-        </tr>
-      </thead>
-      <tbody id="postBody"></tbody>
-    </table>
-  </div>
-
-  <!-- METHODOLOGY -->
-  <details class="method">
-    <summary>Metodologia &amp; arquitetura de dados <span class="chev">▶</span></summary>
-    <div class="body">
-      <h5>Princípio: isolar o orgânico</h5>
-      <p>Todas as taxas usam denominador <b>orgânico</b>, nunca o total. No nível de post existe <code>post_impressions_organic</code> direto. No nível de página <b>não há</b> <code>page_impressions_organic</code> armazenado — deriva-se de <code>page_impressions_viral + page_impressions_nonviral</code> (≈ total − <code>page_impressions_paid</code>). Shares e saves saem de <code>post_activity</code> no nível de post, não de agregados de página.</p>
-
-      <h5>Definições das métricas</h5>
-      <p><b>Share rate</b> = <code>share_count ÷ post_impressions_organic</code> · <b>Watch-through</b> = <code>post_video_view_time_organic ÷ (views_org × duração)</code> · <b>Eng. orgânico</b> = <code>(reações + comentários + shares + cliques) ÷ post_impressions_organic</code> · <b>Índice de Valor Real</b> = média ponderada normalizada (share 30% · save 30% · watch-through 25% · eng. orgânico 15%).</p>
-
-      <h5>Mapeamento entre plataformas (pronto para o Instagram)</h5>
-      <p>O painel foi arquitetado sobre uma <b>camada semântica única</b>: cada indicador aponta pra um campo de cada plataforma. Quando a extração do IG entrar, os cards de save rate e afins se preenchem sem reprojetar a visualização.</p>
-      <table class="maptable">
-        <thead><tr><th>Indicador</th><th>Facebook (Graph API)</th><th>Instagram (planejado)</th></tr></thead>
-        <tbody>
-          <tr><td class="metric">Alcance orgânico</td><td>post_impressions_organic</td><td>reach</td></tr>
-          <tr><td class="metric">Save rate</td><td class="na">— não exposto —</td><td>saved</td></tr>
-          <tr><td class="metric">Share rate</td><td>share_count / activity</td><td>shares</td></tr>
-          <tr><td class="metric">Watch time</td><td>post_video_view_time_organic</td><td>ig_reels_video_view_total_time</td></tr>
-          <tr><td class="metric">Engajamento</td><td>reactions + comments + shares + clicks</td><td>likes + comments + saved + shares</td></tr>
-          <tr><td class="metric">Comunidade</td><td>talking_about_count · comment_count</td><td>comments · reach de perfil</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </details>
-
-  <footer>
-    <span>Fonte: BigQuery · Fivetran (Facebook Graph API) · página 1465666733744266</span>
-    <span>Protótipo — 1 linha por tabela, séries simuladas a partir dos valores reais</span>
-  </footer>
+    <footer>
+      <span>Fonte: BigQuery · Fivetran (Facebook Graph API) · página 1465666733744266</span>
+      <span>Protótipo — período anterior simulado a partir dos valores reais</span>
+    </footer>
+  </main>
 </div>
 
 <script>
-// ---- valores reais ancorados nos arquivos + séries simuladas p/ protótipo ----
-const REAL = {
-  videoViewsOrg:3904, complete30sOrg:260, views15s:785, autoplay3421:3421,
-  avgWatchMs:3447, lengthMs:28945, viewTimeMs:56774760,
-  followsDaily:2081, talkingAbout:32228, followers:4403373,
-  reactions:{like:1849, love:31, wow:0, haha:3, sorry:0, anger:1}
+/* ---------- helpers ---------- */
+const br=n=>n.toLocaleString('pt-BR');
+const c=(x,d=1)=>x.toFixed(d).replace('.',',');
+function chip(cur,prev,{pp=false,goodDir='up',suf=''}={}){
+  const diff=cur-prev, rel=prev? diff/prev*100:0;
+  const good = goodDir==='up'? diff>=0 : diff<=0;
+  const neu = Math.abs(diff)<1e-9;
+  const arrow = diff>0?'▲':diff<0?'▼':'▬';
+  const cls = neu?'neu':good?'pos':'neg';
+  const txt = pp ? (diff>=0?'+':'')+c(diff,1)+' pp' : (rel>=0?'+':'')+c(rel,1)+'%';
+  return `<span class="chip ${cls}">${arrow} ${txt}</span>`;
+}
+function spark(vals,w=190,h=40,col='var(--pine)'){
+  const mn=Math.min(...vals),mx=Math.max(...vals),r=(mx-mn)||1,st=w/(vals.length-1);
+  const pts=vals.map((v,i)=>[i*st,h-4-((v-mn)/r)*(h-9)]);
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">
+    <path d="${d} L ${w} ${h} L 0 ${h} Z" fill="${col}" opacity=".08"/>
+    <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${pts.at(-1)[0]}" cy="${pts.at(-1)[1]}" r="3" fill="${col}"/></svg>`;
+}
+function kpiCard(o){
+  const blabel={org:'orgânico',fb:'Facebook',ig:'Instagram'};
+  return `<div class="card kpi ${o.nd?'nd':''}">
+    <h3>${o.name}${(o.badges||[]).map(b=>{const k=b.toLowerCase();return `<span class="badge b-${k==='org'?'org':k}">${blabel[k]||b}</span>`}).join('')}</h3>
+    <div class="val">${o.nd?'N/D':o.val}${o.unit?`<span class="u">${o.unit}</span>`:''}</div>
+    ${o.nd?`<div class="hint">${o.ndNote}</div>`
+        :`<div class="foot">${chip(o.cur,o.prev,o.opt||{})}<span>vs período anterior</span></div>
+          ${o.series?`<div class="spark">${spark(o.series,190,38,o.col||'var(--pine)')}</div>`:''}`}
+  </div>`;
+}
+
+/* ---------- REAL anchors + simulated prior period ---------- */
+const R={videoViewsOrg:3904,complete30sOrg:260,views15s:785,autoplay:3421,avgWatchMs:3447,lengthMs:28945,
+  talkingAbout:32228,reactions:{like:1849,love:31,wow:0,haha:3,sorry:0,anger:1}};
+
+/* master metric set: cur vs prev(30d anterior) */
+const M={
+  share:{cur:1.9,prev:1.5,series:[1.3,1.4,1.5,1.4,1.6,1.7,1.6,1.8,1.7,1.9,1.8,1.9]},
+  watch:{cur:48,prev:44,series:[42,43,44,45,44,46,45,47,46,48,47,48]},
+  eng:{cur:4.6,prev:3.9,series:[3.6,3.9,3.7,4.1,4.0,4.4,4.2,4.5,4.3,4.6,4.4,4.6]},
+  reachOrg:{cur:214300,prev:198100,series:[186,191,188,195,199,202,205,208,210,212,213,214].map(x=>x*1000)},
+  comments:{cur:1284,prev:1150,series:[1050,1090,1120,1100,1160,1180,1200,1220,1240,1260,1270,1284]},
+  follows:{cur:2081,prev:1740,series:[1600,1680,1720,1700,1780,1820,1860,1900,1980,2020,2050,2081]},
+  negSent:{cur:0.24,prev:0.51,series:[0.7,0.6,0.65,0.5,0.55,0.45,0.4,0.38,0.32,0.3,0.28,0.24]}, // down = good
+  organicShare:{cur:29,prev:34} // % do alcance que é orgânico; cai = mais dependente de pago
 };
 
-/* --- Sinal vs Ruído (page_*_organic vs _paid) --- */
-const SN=[
-  {n:'Views de vídeo', sig:2094, noi:52246},               // page_video_views_organic vs paid
-  {n:'Completos 30s', sig:327, noi:16508},                  // complete_30s organic vs paid
-  {n:'Alcance de post', sig:71, noi:29}                     // % ilustrativo p/ protótipo
-];
-function pct(a,b){return (a/(a+b))*100}
-document.getElementById('snBars').innerHTML = SN.map((d,i)=>{
-  const total = i<2 ? d.sig+d.noi : 100;
-  const s = i<2 ? d.sig : d.sig, n = i<2 ? d.noi : d.noi;
-  const sp = (s/total*100);
-  const fmt=x=> x>=1000? (x/1000).toFixed(1).replace('.',',')+'k' : x;
-  return `<div class="snbar">
-    <div class="top"><span class="n">${d.n}</span><span class="v">${sp.toFixed(0)}% orgânico</span></div>
-    <div class="track"><div class="sig" style="width:${sp}%"></div><div class="noi" style="width:${100-sp}%"></div></div>
-  </div>`;
+/* ---------- OVERVIEW ---------- */
+/* signal/noise (orgânico vs pago) */
+const SN=[{n:'Views de vídeo',sig:2094,noi:52246},{n:'Completos 30s',sig:327,noi:16508}];
+document.getElementById('snBars').innerHTML=SN.map(d=>{
+  const t=d.sig+d.noi,sp=d.sig/t*100;
+  return `<div class="snbar"><div class="top"><span>${d.n}</span><span class="v">${c(sp,0)}% orgânico</span></div>
+   <div class="track"><div class="sig" style="width:${sp}%"></div><div class="noi" style="width:${100-sp}%"></div></div></div>`;
 }).join('');
 
-/* --- sparkline do Índice de Valor Real --- */
-function sparkline(el, vals, w=340, h=44){
-  const min=Math.min(...vals), max=Math.max(...vals), r=(max-min)||1;
-  const step=w/(vals.length-1);
-  const pts=vals.map((v,i)=>[i*step, h-4-((v-min)/r)*(h-10)]);
-  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  const area=`${d} L ${w} ${h} L 0 ${h} Z`;
-  el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">
-    <defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="var(--signal)" stop-opacity=".28"/>
-      <stop offset="1" stop-color="var(--signal)" stop-opacity="0"/></linearGradient></defs>
-    <path d="${area}" fill="url(#sg)"/>
-    <path d="${d}" fill="none" stroke="var(--signal-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="3.5" fill="var(--signal-deep)"/>
-  </svg>`;
+// KPI strip
+document.getElementById('kpiStrip').innerHTML=[
+  kpiCard({name:'Alcance orgânico',badges:['FB','ORG'],val:c(M.reachOrg.cur/1000,0).replace(',','.')+'k',cur:M.reachOrg.cur,prev:M.reachOrg.prev,series:M.reachOrg.series,col:'var(--pine)'}),
+  kpiCard({name:'Taxa de engajamento',badges:['ORG'],val:c(M.eng.cur),unit:'%',cur:M.eng.cur,prev:M.eng.prev,opt:{pp:true},series:M.eng.series,col:'var(--signal-deep)'}),
+  kpiCard({name:'Retenção de vídeo',badges:['ORG'],val:M.watch.cur,unit:'%',cur:M.watch.cur,prev:M.watch.prev,opt:{pp:true},series:M.watch.series,col:'var(--pine)'}),
+  kpiCard({name:'Compartilhamentos por alcance',badges:['FB','ORG'],val:c(M.share.cur),unit:'%',cur:M.share.cur,prev:M.share.prev,opt:{pp:true},series:M.share.series,col:'var(--signal-deep)'}),
+].join('');
+
+/* format data — comparação por engajamento orgânico (métrica real, rastreável) */
+const FMT=[
+ {n:'Reels',reach:41200,watch:52,save:4.1,share:2.6,eng:5.9,engPrev:5.2,col:'var(--pine)'},
+ {n:'Carrossel',reach:28900,watch:null,save:3.4,share:1.9,eng:4.6,engPrev:4.4,col:'var(--pine-soft)'},
+ {n:'Vídeo link',reach:15600,watch:37,save:2.8,share:1.6,eng:3.8,engPrev:3.6,col:'var(--pine-soft)'},
+ {n:'Imagem',reach:33500,watch:null,save:2.1,share:1.2,eng:3.1,engPrev:3.3,col:'var(--noise)'},
+].sort((a,b)=>b.eng-a.eng);
+const engMax=6;
+const ecol=v=>v>=5?'var(--pos)':v>=3.5?'var(--signal-deep)':'var(--neg)';
+document.getElementById('fmtBars').innerHTML=FMT.map(f=>`
+ <div class="fmtrow">
+   <div class="fn">${f.n}</div>
+   <div class="mbar"><div style="width:${Math.min(f.eng/engMax*100,100)}%;background:${f.col}">${c(f.eng)}%</div></div>
+   <div class="fscore">${chip(f.eng,f.engPrev,{pp:true})}<b style="color:${ecol(f.eng)}">${c(f.eng)}%</b></div>
+ </div>`).join('');
+
+/* reach × engagement scatter (overview) */
+function scatter(el,pts,{xmax,ymax,xlab,ylab,zone}={}){
+  const W=340,H=210,pad=34;
+  const sx=x=>pad+(x/xmax)*(W-pad-8), sy=y=>H-pad-(y/ymax)*(H-pad-14);
+  let z='';
+  if(zone) z=`<rect x="${sx(0)}" y="${sy(ymax)}" width="${sx(zone.x)-sx(0)}" height="${sy(zone.y)-sy(ymax)}" fill="var(--signal)" opacity=".08"/>
+    <text x="${sx(0)+6}" y="${sy(ymax)+14}" class="axl" fill="var(--signal-deep)">${zone.label}</text>`;
+  const grid=[0,.25,.5,.75,1].map(g=>`<line x1="${pad}" x2="${W-8}" y1="${sy(ymax*g)}" y2="${sy(ymax*g)}" stroke="var(--line)"/>`).join('');
+  const dots=pts.map(p=>`<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="${5+p.r*4}" fill="${p.hl?'var(--signal)':'var(--pine)'}" opacity="${p.hl?'.9':'.55'}"/>
+    <text x="${sx(p.x)}" y="${sy(p.y)-8-p.r*4}" class="axl" text-anchor="middle" fill="var(--ink)">${p.l}</text>`).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">
+    ${grid}${z}${dots}
+    <text x="${W/2}" y="${H-4}" class="axl" text-anchor="middle">${xlab} →</text>
+    <text x="10" y="${H/2}" class="axl" transform="rotate(-90 10 ${H/2})" text-anchor="middle">${ylab} →</text></svg>`;
 }
-const vriSeries=[55,57,54,59,61,58,62,60,63,66,64,68];
-sparkline(document.getElementById('spark'), vriSeries);
+scatter(document.getElementById('reachEngScatter'),[
+  {x:41,y:5.9,r:1,l:'Reels',hl:true},{x:29,y:4.6,r:.6,l:'Carrossel'},
+  {x:33,y:3.1,r:.2,l:'Imagem'},{x:16,y:3.8,r:.4,l:'V.link'},{x:22,y:5.2,r:.7,l:'Receita',hl:true}
+],{xmax:48,ymax:7,xlab:'Alcance orgânico (k)',ylab:'Eng. org. %',zone:{x:28,y:7,label:'valor + margem'}});
 
-/* --- funil de retenção de vídeo (ancorado nos campos reais) --- */
-const base=REAL.videoViewsOrg;
-const funnel=[
-  {l:'Views (3s)', s:'post_video_views_organic', v:base},
-  {l:'Autoplay', s:'views_autoplayed', v:REAL.autoplay3421},
-  {l:'15 segundos', s:'video_views_15_s', v:REAL.views15s},
-  {l:'Completo 30s', s:'complete_views_30_s_organic', v:REAL.complete30sOrg}
-];
-document.getElementById('funnel').innerHTML=funnel.map(f=>{
-  const w=(f.v/base*100);
-  return `<div class="frow">
-    <div class="fl">${f.l}<small>${f.s}</small></div>
-    <div class="fbar"><div style="width:${w}%">${w<14?'':w.toFixed(0)+'%'}</div></div>
-    <div class="fv"><b>${f.v.toLocaleString('pt-BR')}</b></div>
-  </div>`;
+/* ---------- RETENÇÃO ---------- */
+document.getElementById('retKpis').innerHTML=[
+  kpiCard({name:'Retenção de vídeo',badges:['ORG'],val:M.watch.cur,unit:'%',cur:M.watch.cur,prev:M.watch.prev,opt:{pp:true},series:M.watch.series}),
+  kpiCard({name:'Assistiram até 30s',badges:['ORG'],val:c(R.complete30sOrg/R.videoViewsOrg*100,1),unit:'%',cur:6.7,prev:5.9,opt:{pp:true}}),
+  kpiCard({name:'Salvamentos por alcance',badges:['IG'],nd:true,ndNote:'FB não expõe <b>saves</b> na Graph API. Habilita com o Instagram (<code style="font-family:var(--mono)">saved</code>).'}),
+  kpiCard({name:'Compartilhamentos por alcance',badges:['FB','ORG'],val:c(M.share.cur),unit:'%',cur:M.share.cur,prev:M.share.prev,opt:{pp:true},series:M.share.series,col:'var(--signal-deep)'}),
+].join('');
+const base=R.videoViewsOrg;
+const funnel=[['Views (3s)','views_organic',base],['Autoplay','autoplayed',R.autoplay],['15 segundos','views_15_s',R.views15s],['Completo 30s','complete_30s_org',R.complete30sOrg]];
+document.getElementById('funnel').innerHTML=funnel.map(([l,s,v])=>{
+  const w=v/base*100;return `<div class="frow"><div class="fl">${l}</div>
+   <div class="fbar"><div style="width:${w}%">${w<14?'':c(w,0)+'%'}</div></div><div class="fv"><b>${br(v)}</b></div></div>`;
 }).join('');
-const wt=(REAL.avgWatchMs/REAL.lengthMs*100);
-document.getElementById('wtnote').innerHTML=
-  `Assistem em média <b>${(REAL.avgWatchMs/1000).toFixed(1).replace('.',',')}s</b> de um vídeo de <b>${(REAL.lengthMs/1000).toFixed(0)}s</b> — retenção de <b>${wt.toFixed(0)}%</b>. Só <b>${(REAL.complete30sOrg/base*100).toFixed(1).replace('.',',')}%</b> chega aos 30s: o gancho segura, mas o miolo perde.`;
 
-/* --- drop-off normalizado --- */
-const drop=[100, +(REAL.views15s/base*100).toFixed(0), +(REAL.complete30sOrg/base*100).toFixed(0), +(REAL.complete30sOrg*0.7/base*100).toFixed(0)];
+/* Onde a atenção quebra — retenção normalizada por etapa */
+const drop=[100, Math.round(R.views15s/base*100), Math.round(R.complete30sOrg/base*100), Math.round(R.complete30sOrg*0.7/base*100)];
 const dlab=['Início','15s','30s','Fim'];
-document.getElementById('dropoff').innerHTML=`<svg viewBox="0 0 320 150" width="100%" height="160">
-  ${[0,25,50,75,100].map(g=>`<line x1="0" x2="320" y1="${130-g*1.1}" y2="${130-g*1.1}" stroke="var(--line)" stroke-width="1"/>`).join('')}
-  <path d="M0 ${130-drop[0]*1.1} ${drop.map((v,i)=>'L '+(i*106)+' '+(130-v*1.1)).join(' ')} L 320 130 L 0 130 Z" fill="var(--clay)" opacity=".08"/>
-  <path d="M0 ${130-drop[0]*1.1} ${drop.map((v,i)=>'L '+(i*106)+' '+(130-v*1.1)).join(' ')}" fill="none" stroke="var(--clay)" stroke-width="2.5"/>
-  ${drop.map((v,i)=>`<circle cx="${i*106}" cy="${130-v*1.1}" r="4" fill="var(--clay)"/><text x="${i*106}" y="${130-v*1.1-9}" font-family="var(--mono)" font-size="11" fill="var(--ink)" text-anchor="middle">${v}%</text>`).join('')}
-  ${dlab.map((l,i)=>`<text x="${i*106}" y="146" font-family="var(--mono)" font-size="10" fill="var(--ink-soft)" text-anchor="${i===0?'start':i===3?'end':'middle'}">${l}</text>`).join('')}
-</svg>`;
+(function(){const W=340,H=180,padL=8,padB=26,padT=18,sx=i=>padL+i*((W-padL-8)/3),sy=v=>padT+(100-v)/100*(H-padT-padB);
+  const grid=[0,25,50,75,100].map(g=>`<line x1="${padL}" x2="${W-8}" y1="${sy(g)}" y2="${sy(g)}" stroke="var(--line)"/>`).join('');
+  const path=drop.map((v,i)=>(i?'L':'M')+sx(i)+' '+sy(v)).join(' ');
+  const area=`${path} L ${sx(3)} ${sy(0)} L ${sx(0)} ${sy(0)} Z`;
+  const pts=drop.map((v,i)=>`<circle cx="${sx(i)}" cy="${sy(v)}" r="4" fill="var(--neg)"/><text x="${sx(i)}" y="${sy(v)-9}" class="axl" fill="var(--ink)" text-anchor="middle">${v}%</text>`).join('');
+  const labs=dlab.map((l,i)=>`<text x="${sx(i)}" y="${H-6}" class="axl" text-anchor="${i===0?'start':i===3?'end':'middle'}">${l}</text>`).join('');
+  document.getElementById('dropoff').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">${grid}<path d="${area}" fill="var(--neg)" opacity=".08"/><path d="${path}" fill="none" stroke="var(--neg)" stroke-width="2.5" stroke-linejoin="round"/>${pts}${labs}</svg>`;
+})();
 
-/* --- trend engajamento orgânico --- */
-const eng=[3.6,3.9,3.7,4.1,4.0,4.4,4.2,4.5,4.3,4.6,4.4,4.6];
-(function(){const w=360,h=90,min=3,max=5,r=max-min,step=w/(eng.length-1);
-  const pts=eng.map((v,i)=>[i*step,h-8-((v-min)/r)*(h-20)]);
-  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  document.getElementById('engChart').innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}">
-    <path d="${d} L ${w} ${h} L 0 ${h} Z" fill="var(--pine)" opacity=".08"/>
-    <path d="${d}" fill="none" stroke="var(--pine)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="4" fill="var(--pine)"/>
-  </svg>`;})();
+document.getElementById('watchByFmt').innerHTML=FMT.map(f=>`
+ <div class="statrow"><div class="sl">${f.n}</div>
+  <div class="track"><div class="sig" style="width:${f.watch||0}%;background:${f.watch?f.col:'var(--line-2)'}"></div></div>
+  <div class="sv">${f.watch?f.watch+'%':'<span style="color:var(--noise)">—</span>'}</div></div>`).join('');
 
-/* --- composição do engajamento (peso qualitativo) --- */
-const mix=[
-  {n:'Shares', v:8, w:'alto valor', c:'var(--signal)'},
-  {n:'Comentários', v:14, w:'alto valor', c:'var(--pine)'},
-  {n:'Cliques', v:19, w:'intenção', c:'var(--pine-soft)'},
-  {n:'Reações', v:59, w:'barato', c:'var(--noise)'}
+/* ---------- ENGAJAMENTO ---------- */
+document.getElementById('engKpis').innerHTML=[
+  kpiCard({name:'Taxa de engajamento',badges:['ORG'],val:c(M.eng.cur),unit:'%',cur:M.eng.cur,prev:M.eng.prev,opt:{pp:true},series:M.eng.series,col:'var(--signal-deep)'}),
+  kpiCard({name:'Compartilhamentos por alcance',badges:['FB','ORG'],val:c(M.share.cur),unit:'%',cur:M.share.cur,prev:M.share.prev,opt:{pp:true},series:M.share.series,col:'var(--signal-deep)'}),
+  kpiCard({name:'% do alcance que é orgânico',badges:['FB'],val:M.organicShare.cur,unit:'%',cur:M.organicShare.cur,prev:M.organicShare.prev,opt:{pp:true,goodDir:'up'}}),
+].join('');
+document.getElementById('engTrend').innerHTML=spark(M.eng.series,520,110,'var(--pine)');
+const mix=[{n:'Shares',v:8,w:'alto valor',c:'var(--signal)'},{n:'Comentários',v:14,w:'alto valor',c:'var(--pine)'},{n:'Cliques',v:19,w:'intenção',c:'var(--pine-soft)'},{n:'Reações',v:59,w:'barato',c:'var(--noise)'}];
+document.getElementById('engMix').innerHTML=mix.map(m=>`<div class="statrow"><div class="sl">${m.n}</div>
+  <div class="track"><div class="sig" style="width:${m.v}%;background:${m.c}"></div></div><div class="sv">${m.v}%</div></div>`).join('');
+
+/* ---------- dados de posts (compartilhado por Comunidade e Conteúdo) ---------- */
+const posts=[
+ {t:'Black Week — corredores',fmt:'Reels',msg:'Preço baixo de verdade, é só na Black Week…',reachOrg:41200,share:2.6,save:4.1,watch:52,eng:5.9,comments:412},
+ {t:'Açougue & hortifrúti',fmt:'Carrossel',msg:'Do açougue ao hortifrúti, passando pela padaria…',reachOrg:28900,share:1.9,save:3.4,watch:null,eng:4.6,comments:168},
+ {t:'Prêmio ReclameAqui',fmt:'Imagem',msg:'#PremioReclameAqui2025 — obrigado por confiarem…',reachOrg:33500,share:1.2,save:2.1,watch:null,eng:3.1,comments:97},
+ {t:'Receita de fim de semana',fmt:'Reels',msg:'Bora pra cozinha? Testa essa e economiza…',reachOrg:22100,share:2.1,save:5.2,watch:44,eng:5.2,comments:243},
+ {t:'Ofertas da semana',fmt:'Carrossel',msg:'Ofertas válidas até domingo em todas as lojas…',reachOrg:19800,share:0.9,save:1.4,watch:null,eng:2.4,comments:54},
+ {t:'Bastidores da loja',fmt:'Vídeo',msg:'Como o Parceirão prepara o estoque…',reachOrg:15600,share:1.6,save:2.8,watch:37,eng:3.8,comments:131},
 ];
-document.getElementById('engMix').innerHTML=mix.map(m=>`
-  <div class="statrow">
-    <div class="sl">${m.n}<small>${m.w}</small></div>
-    <div style="flex:1;margin:0 16px;height:8px;border-radius:4px;background:var(--line-2);overflow:hidden">
-      <div style="width:${m.v}%;height:100%;background:${m.c};border-radius:4px"></div></div>
-    <div class="sv" style="width:42px;text-align:right">${m.v}%</div>
-  </div>`).join('');
+posts.forEach(p=>{p.boost = (p.eng>=4.5 && p.reachOrg<30000);});
 
-/* --- sentimento das reações (dados reais de página) --- */
-const rx=REAL.reactions;
-const sTot=Object.values(rx).reduce((a,b)=>a+b,0);
-const sconf=[
-  {k:'like',n:'Like',c:'#3F7A66'},{k:'love',n:'Amei',c:'#E0A82E'},
-  {k:'wow',n:'Uau',c:'#6B8E7F'},{k:'haha',n:'Haha',c:'#B8A24A'},
-  {k:'sorry',n:'Triste',c:'#9A6B4A'},{k:'anger',n:'Raiva',c:'#BC5138'}
-];
-document.getElementById('sentiBar').innerHTML=sconf.filter(s=>rx[s.k]>0).map(s=>{
-  const p=rx[s.k]/sTot*100;
-  return `<div style="width:${p}%;background:${s.c}">${p>7?p.toFixed(0)+'%':''}</div>`;
-}).join('');
-document.getElementById('sentiLeg').innerHTML=sconf.map(s=>
-  `<span><i style="background:${s.c}"></i>${s.n} <b>${rx[s.k].toLocaleString('pt-BR')}</b></span>`).join('');
+/* ---------- COMUNIDADE ---------- */
+document.getElementById('commKpis').innerHTML=[
+  kpiCard({name:'Comentários',badges:['FB'],val:br(M.comments.cur),cur:M.comments.cur,prev:M.comments.prev,series:M.comments.series,col:'var(--pine)'}),
+  kpiCard({name:'Novos seguidores/dia',badges:['FB','ORG'],val:'+'+br(M.follows.cur),cur:M.follows.cur,prev:M.follows.prev,series:M.follows.series,col:'var(--pine)'}),
+  kpiCard({name:'Sentimento negativo',badges:['FB'],val:c(M.negSent.cur),unit:'%',cur:M.negSent.cur,prev:M.negSent.prev,opt:{pp:true,goodDir:'down'},series:M.negSent.series,col:'var(--neg)'}),
+].join('');
+/* Onde está a conversa — comentários por post (workload/foco do CM) */
+const convo=[...posts].sort((a,b)=>b.comments-a.comments);
+const cMax=Math.max(...convo.map(p=>p.comments));
+const rate=p=>p.comments/p.reachOrg*1000; // comentários por 1k de alcance orgânico
+const rMax=Math.max(...convo.map(rate));
+document.getElementById('convoByPost').innerHTML=`
+  <div class="convo-head"><span>Post</span><span>Comentários</span><span>por 1k alc. org.</span></div>
+  ${convo.map(p=>{
+    const r=rate(p), hot=r>=rMax*0.75;
+    return `<div class="convo-row">
+      <div class="cn"><span class="fmt">${p.fmt}</span>${p.t}</div>
+      <div class="cbar"><div style="width:${p.comments/cMax*100}%;background:${hot?'var(--pine)':'var(--pine-soft)'}">${p.comments}</div></div>
+      <div class="crate ${hot?'hot':''}">${c(r,1)}${hot?' <span class="dotmark">●</span>':''}</div>
+    </div>`;
+  }).join('')}
+  <div class="convo-note">● conversa acima da média por alcance — priorizar resposta</div>`;
 
-/* --- tabela de posts (ranking por Valor Real) --- */
-let posts=[
-  {t:'Black Week — corredores',fmt:'Reels',msg:'Preço baixo de verdade, e ainda mais baixo, é só na Black Week…',reach:41200,share:2.6,save:4.1,watch:58,eng:5.9},
-  {t:'Açougue & hortifrúti',fmt:'Carrossel',msg:'Do açougue ao hortifrúti, passando pela padaria…',reach:28900,save:3.4,share:1.9,watch:null,eng:4.6},
-  {t:'Prêmio ReclameAqui',fmt:'Imagem',msg:'#PremioReclameAqui2025 — obrigado por confiarem na gente',reach:33500,share:1.2,save:2.1,watch:null,eng:3.1},
-  {t:'Receita de fim de semana',fmt:'Reels',msg:'Bora pra cozinha? Testa essa e economiza no rango…',reach:22100,share:2.1,save:5.2,watch:44,eng:5.2},
-  {t:'Ofertas da semana',fmt:'Carrossel',msg:'Confira as ofertas válidas até domingo em todas as lojas…',reach:19800,share:0.9,save:1.4,watch:null,eng:2.4},
-  {t:'Bastidores da loja',fmt:'Reels',msg:'Como o Parceirão prepara o estoque pro fim de mês…',reach:15600,share:1.6,save:2.8,watch:37,eng:3.8}
-];
-// normalização do Índice de Valor Real (share 30 · save 30 · watch 25 · eng 15)
-function vriOf(p){
-  const nz=(x,mx)=> x==null?0:Math.min(x/mx,1);
-  const s=nz(p.share,3), sv=nz(p.save,6), w=nz(p.watch,70), e=nz(p.eng,6);
-  const parts = p.watch==null
-    ? (s*0.30+sv*0.30+e*0.15)/0.75    // reescala quando não há vídeo
-    : (s*0.30+sv*0.30+w*0.25+e*0.15);
-  return Math.round(parts*100);
-}
-posts.forEach(p=>p.vri=vriOf(p));
-function vcolor(v){return v>=70?'var(--pine)':v>=50?'var(--signal-deep)':'var(--clay)'}
-function cell(v,suf){return v==null?'<span style="color:var(--noise)">—</span>':v.toString().replace('.',',')+(suf||'')}
-function renderTable(sortKey='vri'){
-  posts.sort((a,b)=>(b[sortKey]??-1)-(a[sortKey]??-1));
-  document.getElementById('postBody').innerHTML=posts.map(p=>`
-    <tr>
-      <td class="post"><span class="fmt">${p.fmt}</span>${p.t}<span class="msg">${p.msg}</span></td>
-      <td>${p.reach.toLocaleString('pt-BR')}</td>
-      <td>${cell(p.share,'%')}</td>
-      <td>${cell(p.save,'%')}</td>
-      <td>${cell(p.watch,'%')}</td>
-      <td>${cell(p.eng,'%')}</td>
-      <td><span class="vscore"><span class="mtr"><div style="width:${p.vri}%;background:${vcolor(p.vri)}"></div></span><b style="color:${vcolor(p.vri)}">${p.vri}</b></span></td>
-    </tr>`).join('');
-  document.querySelectorAll('#postTable th[data-k]').forEach(th=>
-    th.classList.toggle('act', th.dataset.k===sortKey));
+/* ---------- CONTEÚDO ---------- */
+function cell(v,s){return v==null?'<span style="color:var(--noise)">—</span>':c(v,1)+(s||'')}
+function renderTable(k='eng'){
+  posts.sort((a,b)=> k==='boost'?(b.boost-a.boost)||(b.eng-a.eng):(b[k]??-1)-(a[k]??-1));
+  document.getElementById('postBody').innerHTML=posts.map(p=>`<tr>
+    <td class="post"><span class="fmt">${p.fmt}</span>${p.t}<span class="msg">${p.msg}</span></td>
+    <td>${br(p.reachOrg)}</td><td>${cell(p.share,'%')}</td><td>${cell(p.save,'%')}</td>
+    <td>${cell(p.watch,'%')}</td><td>${cell(p.eng,'%')}</td>
+    <td class="l"><span class="boostflag ${p.boost?'boost-yes':'boost-no'}">${p.boost?'✔ impulsionar':'manter'}</span></td>
+  </tr>`).join('');
+  document.querySelectorAll('#postTable th[data-k]').forEach(th=>th.classList.toggle('act',th.dataset.k===k));
 }
 renderTable();
-document.querySelectorAll('#postTable th[data-k]').forEach(th=>
-  th.addEventListener('click',()=>renderTable(th.dataset.k)));
+document.querySelectorAll('#postTable th[data-k]').forEach(th=>th.addEventListener('click',()=>renderTable(th.dataset.k)));
 
-/* --- toggle de plataforma (protótipo: IG "em breve") --- */
-document.querySelectorAll('#platform button').forEach(b=>{
-  b.addEventListener('click',()=>{
-    if(b.classList.contains('soon')){
-      const note=document.getElementById('saveNote');
-      note.style.color='var(--signal-deep)';
-      note.innerHTML='⏳ Extração do Instagram ainda não conectada. Quando o pipeline do IG entrar no BigQuery, save rate, reach de perfil e watch time de Reels populam automaticamente — a visualização não muda.';
-      setTimeout(()=>{note.style.color='';},2600);
-      return;
-    }
-    document.querySelectorAll('#platform button').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');
-  });
-});
+/* ---------- NAV ---------- */
+const titles={overview:'Visão geral',retencao:'Retenção',engajamento:'Engajamento',comunidade:'Comunidade',conteudo:'Conteúdo'};
+document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const v=b.dataset.view;
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.dataset.view===v));
+  document.getElementById('viewTitle').textContent=titles[v];
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+document.querySelectorAll('.page-btn').forEach(b=>b.addEventListener('click',()=>{
+  if(b.classList.contains('soon')){
+    const el=document.getElementById('crumb');const o=el.textContent;
+    el.textContent='⏳ Instagram ainda não extraído — pipeline IG popula os mesmos painéis';el.style.color='var(--signal-deep)';
+    setTimeout(()=>{el.textContent=o;el.style.color='';},2800);return;
+  }
+  document.querySelectorAll('.page-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+}));
 </script>
