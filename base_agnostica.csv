@@ -1,0 +1,18 @@
+data,plataforma,conta,nivel,objeto_id,metrica_canonica,valor,etapa_funil,categoria
+2026-01-19,facebook,Atacadão SA,post,1465666733744266_541215264919029,visualizacoes_video,3904.0,topo,visibilidade
+2026-01-19,facebook,Atacadão SA,post,1465666733744266_541215264919029,visualizacoes_midia,17104.0,topo,visibilidade
+2026-01-19,facebook,Atacadão SA,post,1465666733744266_541215264919029,videos_completos,260.0,meio,engajamento
+2026-01-19,facebook,Atacadão SA,post,1465666733744266_541215264919029,cliques,34.0,fundo,acao
+2026-01-19,facebook,Atacadão SA,post,1465666733744266_541215264919029,reacoes,268.0,meio,engajamento
+2025-01-15,facebook,Atacadão SA,conta,1465666733744266,novos_seguidores,866.0,meio,audiencia
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,visualizacoes_video,54340.0,topo,visibilidade
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,visualizacoes_midia,787957.0,topo,visibilidade
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,interacoes,5827.0,meio,engajamento
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,seguidores,4393419.0,meio,audiencia
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,novos_seguidores,2081.0,meio,audiencia
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,visualizacoes_perfil,5327.0,meio,audiencia
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,acoes_pagina,0.0,fundo,acao
+2026-01-13,facebook,Atacadão SA,conta,1465666733744266,reacoes,1884.0,meio,engajamento
+2026-01-22,facebook,Atacadão SA,post,1465666733744266_917503000623585,reacoes,27.0,meio,engajamento
+2026-01-22,facebook,Atacadão SA,post,1465666733744266_917503000623585,comentarios,2.0,meio,engajamento
+2026-01-22,facebook,Atacadão SA,post,1465666733744266_917503000623585,compartilhamentos,0.0,meio,engajamento
