@@ -1,0 +1,801 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social — Painel de Performance</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+:root{
+  --ink:#1D1F30;--ink-soft:#6B6F80;--muted:#9AA0B0;
+  --paper:#F7F8FA;--panel:#FFFFFF;
+  --purple:#7A5AF5;--purple-soft:#A78BF6;--purple-deep:#6A4BE0;--lilac:#F1EDFD;
+  --track:#EEEFF4;--line:#EDEEF3;
+  --pos:#2E9E6A;--pos-bg:#E4F5EC;--neg:#E5484D;--neg-bg:#FCE9E9;
+  --sans:'Inter',system-ui,sans-serif;--disp:'Plus Jakarta Sans',system-ui,sans-serif;
+  --side:238px;--r:18px;
+  --shadow:0 1px 2px rgba(29,31,48,.04),0 6px 20px rgba(29,31,48,.05);
+  --shadow-sm:0 1px 3px rgba(29,31,48,.05);
+}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.num{font-family:var(--disp);font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:-.02em}
+.app{display:grid;grid-template-columns:var(--side) 1fr;min-height:100vh}
+
+/* ---------- SIDEBAR (claro) ---------- */
+aside{background:var(--panel);border-right:1px solid var(--line);padding:20px 15px;display:flex;flex-direction:column;gap:5px;position:sticky;top:0;height:100vh}
+.logo{font-family:var(--disp);font-weight:800;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;padding:2px 8px 18px;color:var(--ink)}
+.logo .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--purple),var(--purple-soft));display:grid;place-items:center;color:#fff;font-size:14px;box-shadow:0 4px 10px rgba(122,90,245,.35)}
+.side-lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:14px 9px 7px;font-weight:600}
+.page-btn{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:11px;cursor:pointer;border:1px solid transparent;font-size:13px;font-weight:500;transition:.14s}
+.page-btn .ic{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff}
+.page-btn.fb .ic{background:#3b5aa8}.page-btn.ig .ic{background:linear-gradient(135deg,#C9448A,#7A5AF5)}
+.page-btn.on{background:var(--lilac)}
+.page-btn.soon{opacity:.6}
+.page-btn .foll{margin-left:auto;font-size:11px;color:var(--muted);font-weight:500}
+.page-btn .soon-tag{margin-left:auto;font-size:8.5px;background:var(--track);color:var(--ink-soft);padding:2px 7px;border-radius:6px;letter-spacing:.03em;font-weight:600}
+.nav-btn{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:11px;cursor:pointer;color:var(--ink-soft);font-size:13.5px;font-weight:500;transition:.14s}
+.nav-btn:hover{background:var(--paper);color:var(--ink)}
+.nav-btn.on{background:var(--lilac);color:var(--purple-deep);font-weight:600}
+.nav-btn .gl{width:18px;height:18px;display:grid;place-items:center;opacity:.9}
+.nav-btn.on .gl{color:var(--purple)}
+.sb-foot{margin-top:auto;padding:12px 10px 2px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+
+/* ---------- MAIN ---------- */
+main{padding:22px 26px 56px;max-width:1240px}
+.banner{display:flex;align-items:center;gap:10px;background:var(--lilac);border:1px solid #E7DFFB;color:var(--purple-deep);padding:9px 14px;border-radius:12px;font-size:12.5px;margin-bottom:18px}
+.banner .b-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);flex:none;box-shadow:0 0 0 4px rgba(122,90,245,.15)}
+.banner b{font-weight:600}
+.banner .sync{margin-left:auto;color:var(--ink-soft);font-size:11.5px}
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.topbar .crumb{font-size:11.5px;color:var(--muted);font-weight:500}
+.topbar h1{font-family:var(--disp);font-size:23px;font-weight:700;letter-spacing:-.02em;margin:2px 0 0}
+.controls{margin-left:auto;display:flex;align-items:center;gap:10px}
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:3px;box-shadow:var(--shadow-sm)}
+.seg button{font-family:var(--sans);font-size:12.5px;font-weight:600;border:0;background:transparent;color:var(--ink-soft);padding:7px 14px;border-radius:8px;cursor:pointer;transition:.14s}
+.seg button.on{background:var(--purple);color:#fff;box-shadow:0 3px 8px rgba(122,90,245,.3)}
+.proto{font-size:11px;background:var(--lilac);color:var(--purple-deep);border:1px solid #E7DFFB;padding:7px 12px;border-radius:10px;font-weight:600}
+
+.view{display:none}.view.on{display:block}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:1fr 1fr}
+.g21{grid-template-columns:1.55fr 1fr}.g12{grid-template-columns:1fr 1.55fr}
+.mb{margin-bottom:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow)}
+.card h3{font-family:var(--disp);font-size:14px;font-weight:700;margin:0 0 2px;display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.card .csub{font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.badge{font-size:9.5px;letter-spacing:.02em;padding:3px 8px;border-radius:7px;font-weight:600}
+.b-fb{background:#EAEFFB;color:#3b5aa8}.b-org{background:var(--lilac);color:var(--purple-deep)}.b-ig{background:#FBEAF3;color:#C9448A}
+
+/* delta chip */
+.chip{font-family:var(--disp);font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip.pos{background:var(--pos-bg);color:var(--pos)}.chip.neg{background:var(--neg-bg);color:var(--neg)}.chip.neu{background:var(--track);color:var(--ink-soft)}
+
+/* KPI */
+.kpi .k-top{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.kpi .k-name{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+.kpi .val{font-size:32px;line-height:1.1;margin:8px 0 8px;display:flex;align-items:baseline;gap:6px}
+.kpi .val .u{font-size:15px;color:var(--muted);font-weight:600;-webkit-text-fill-color:initial}
+.kpi .foot{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+.kpi .spark{margin-top:12px}
+.kpi.nd .val{color:var(--muted)}
+.kpi.nd{background:linear-gradient(180deg,#FCFCFE,#F7F8FA)}
+.nd-note{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-top:8px}
+.nd-note b{color:var(--purple-deep)}
+
+/* donut */
+.donut-card{display:flex;align-items:center;gap:20px}
+.donut-wrap{position:relative;flex:none}
+.donut-n{font-family:var(--disp);font-weight:800;font-size:22px;fill:var(--ink);font-variant-numeric:tabular-nums}
+.donut-meta .val{font-family:var(--disp);font-weight:700;font-size:15px}
+.donut-meta .txt{font-size:12px;color:var(--ink-soft);max-width:22ch;margin-top:6px;line-height:1.5}
+
+/* bars (format) */
+.fmtrow{display:grid;grid-template-columns:92px 1fr 118px;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+.fmtrow:last-child{border:0}
+.fmtrow .fn{font-family:var(--disp);font-size:13px;font-weight:700}
+.mbar{height:24px;border-radius:8px;background:var(--track);overflow:hidden}
+.mbar>div{height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font-family:var(--disp);font-size:11px;font-weight:600;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.fmtrow .fsc{display:flex;align-items:center;gap:9px;justify-content:flex-end}
+.fmtrow .fsc b{font-family:var(--disp);font-size:16px;font-weight:700}
+
+/* signal vs noise */
+.snbar{margin-bottom:14px}
+.snbar .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;font-size:12.5px;font-weight:500}
+.snbar .top .v{font-size:11.5px;color:var(--muted);font-family:var(--disp);font-weight:600}
+.track-b{height:12px;border-radius:7px;background:var(--track);overflow:hidden;display:flex}
+.track-b .sig{background:var(--purple)}.track-b .noi{background:#C3C7D2}
+.snleg{display:flex;gap:18px;font-size:11.5px;color:var(--ink-soft);margin-top:4px}
+.snleg span{display:flex;align-items:center;gap:7px}.snleg i{width:10px;height:10px;border-radius:3px}
+
+/* funnel */
+.funnel{display:flex;flex-direction:column;gap:9px}
+.frow{display:grid;grid-template-columns:104px 1fr 70px;align-items:center;gap:12px}
+.frow .fl{font-size:12px}
+.fbar{height:24px;background:var(--track);border-radius:8px;overflow:hidden}
+.fbar>div{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-soft));display:flex;align-items:center;justify-content:flex-end;padding-right:9px;color:#fff;font-family:var(--disp);font-size:11px;font-weight:600;border-radius:8px}
+.frow .fv{font-family:var(--disp);font-size:12.5px;font-weight:600;text-align:right}
+
+/* stat rows */
+.statrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.statrow:last-child{border:0}
+.statrow .sl{font-size:12.5px;flex:0 0 auto;min-width:92px;font-weight:500}
+.statrow .track-b{flex:1}
+.statrow .sv{font-family:var(--disp);font-size:15px;font-weight:700;width:46px;text-align:right}
+
+/* conversa */
+.convo-head,.convo-row{display:grid;grid-template-columns:1fr 150px 92px;gap:14px;align-items:center}
+.convo-head{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.convo-head span:not(:first-child){text-align:right}
+.convo-row{padding:10px 0;border-bottom:1px solid var(--line)}.convo-row:last-of-type{border-bottom:0}
+.convo-row .cn{font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.convo-row .cn .fmt{font-size:9px;padding:2px 7px;border-radius:6px;background:var(--lilac);color:var(--purple-deep);margin-right:8px;font-weight:600}
+.convo-row .cbar{height:22px;background:var(--track);border-radius:7px;overflow:hidden}
+.convo-row .cbar>div{height:100%;border-radius:7px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-family:var(--disp);font-size:11px;font-weight:600;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.convo-row .crate{font-family:var(--disp);font-size:16px;font-weight:700;text-align:right;color:var(--ink-soft)}
+.convo-row .crate.hot{color:var(--purple)}
+.convo-row .crate .dot{font-size:9px;color:var(--purple);vertical-align:middle}
+.convo-note{font-size:11px;color:var(--purple-deep);margin-top:13px;display:flex;align-items:center;gap:6px}
+
+/* table */
+.tablewrap{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+thead th{font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-align:right;padding:13px 14px;background:var(--paper);border-bottom:1px solid var(--line);font-weight:600;cursor:pointer;white-space:nowrap;user-select:none}
+thead th.l{text-align:left}thead th.act{color:var(--purple-deep)}
+tbody td{padding:12px 14px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--disp);font-weight:600;font-variant-numeric:tabular-nums}
+tbody td.l{text-align:left}tbody tr:last-child td{border:0}tbody tr:hover{background:var(--paper)}
+td.post{text-align:left;font-family:var(--sans);font-weight:400;max-width:240px}
+td.post .fmt{font-size:9px;padding:2px 7px;border-radius:6px;background:var(--lilac);color:var(--purple-deep);margin-right:8px;font-weight:600}
+td.post .msg{color:var(--muted);font-size:11px;display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:400}
+.rowchip{font-family:var(--disp);font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:6px}
+.boostflag{font-size:9.5px;padding:3px 8px;border-radius:7px;font-weight:600}
+.boost-yes{background:var(--lilac);color:var(--purple-deep)}.boost-no{background:var(--track);color:var(--ink-soft)}
+
+.axl{font-family:var(--sans);font-size:10px;fill:var(--muted)}
+.decision .dh{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+.decision .tag{font-size:9px;letter-spacing:.06em;text-transform:uppercase;background:var(--purple);color:#fff;padding:2px 8px;border-radius:7px;font-weight:700}
+
+/* ---------- GOOGLE ADS ---------- */
+.page-btn.g .ic{background:#1a73e8}
+.b-g{background:#E8F0FE;color:#1a73e8}
+.navset{display:contents}.navset[hidden]{display:none}
+.gnote{font-size:11px;color:var(--ink-soft);margin-top:12px;line-height:1.5}
+.gnote b{color:var(--purple-deep)}
+.mfun{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:10px;margin-top:12px}
+.mstep{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.mstep .l{font-size:11.5px;color:var(--ink-soft);font-weight:500}
+.mstep .v{font-family:var(--disp);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.marrow{text-align:center;font-size:10.5px;color:var(--purple-deep);font-weight:600;line-height:1.3}
+.marrow b{display:block;font-family:var(--disp);font-size:13px}
+.rec{font-size:9.5px;padding:3px 8px;border-radius:7px;font-weight:600;white-space:nowrap}
+.rec-up{background:var(--pos-bg);color:var(--pos)}.rec-mid{background:var(--track);color:var(--ink-soft)}.rec-down{background:var(--neg-bg);color:var(--neg)}
+.tag-aw{font-size:9px;padding:2px 7px;border-radius:6px;background:#E8F0FE;color:#1a73e8;margin-left:6px;font-weight:600}
+td.muted{color:var(--muted)}
+.qbars{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:110px;margin-left:auto}
+.qbars i{display:block;height:18px;border-radius:4px;background:var(--track);position:relative;overflow:hidden}
+.qbars i>span{position:absolute;left:0;right:0;bottom:0;background:var(--purple)}
+
+footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+@media(max-width:920px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px}
+  aside .side-lbl,aside .sb-foot{display:none}
+  .g4,.g3,.g2,.g21,.g12{grid-template-columns:1fr}
+  .controls{width:100%;margin-left:0}
+  .mfun{grid-template-columns:1fr}
+  .tablewrap{overflow-x:auto}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <aside>
+    <div class="logo"><span class="mark">◈</span>Social</div>
+    <div class="side-lbl">Páginas</div>
+    <div class="page-btn fb on" data-page="fb"><span class="ic">f</span>Atacadão SA<span class="foll">4,4M</span></div>
+    <div class="page-btn ig soon" data-page="ig"><span class="ic">◎</span>@atacadaosa<span class="soon-tag">em breve</span></div>
+    <div class="page-btn g" data-page="g"><span class="ic">G</span>Google Ads<span class="foll">mídia paga</span></div>
+    <div class="side-lbl">Seções</div>
+    <div class="navset" data-page="fb">
+      <div class="nav-btn on" data-view="overview"><span class="gl">▨</span>Visão geral</div>
+      <div class="nav-btn" data-view="retencao"><span class="gl">◔</span>Retenção</div>
+      <div class="nav-btn" data-view="engajamento"><span class="gl">✦</span>Engajamento</div>
+      <div class="nav-btn" data-view="comunidade"><span class="gl">◍</span>Comunidade</div>
+      <div class="nav-btn" data-view="conteudo"><span class="gl">▤</span>Conteúdo</div>
+    </div>
+    <div class="navset" data-page="g" hidden>
+      <div class="nav-btn" data-view="g-overview"><span class="gl">▨</span>Visão geral</div>
+      <div class="nav-btn" data-view="g-campanhas"><span class="gl">▤</span>Campanhas</div>
+      <div class="nav-btn" data-view="g-video"><span class="gl">▶</span>Vídeo (YouTube)</div>
+      <div class="nav-btn" data-view="g-alcance"><span class="gl">◎</span>Alcance</div>
+      <div class="nav-btn" data-view="g-conversoes"><span class="gl">◆</span>Conversões & loja</div>
+    </div>
+    <div class="sb-foot">Agência · time de Social</div>
+  </aside>
+
+  <main>
+    <div class="banner">
+      <span class="b-dot"></span>
+      <span id="bannerTxt"><b>Instagram ainda não conectado.</b> Métricas de IG (salvamentos, alcance de perfil, Reels) entram quando o pipeline for extraído.</span>
+      <span class="sync" id="bannerSync">Sincronização Fivetran · há 3 h</span>
+    </div>
+
+    <div class="topbar">
+      <div>
+        <div class="crumb" id="crumb">Facebook · Atacadão SA</div>
+        <h1 id="viewTitle">Visão geral</h1>
+      </div>
+      <div class="controls">
+        <div class="seg" id="period">
+          <button data-p="7">7 dias</button>
+          <button data-p="30" class="on">30 dias</button>
+          <button data-p="90">90 dias</button>
+        </div>
+        <span class="proto">protótipo</span>
+      </div>
+    </div>
+
+    <!-- VISÃO GERAL -->
+    <section class="view on" data-view="overview">
+      <div class="grid g4 mb" id="ovKpis"></div>
+      <div class="grid g21 mb">
+        <div class="card">
+          <h3>Taxa de engajamento <span class="badge b-org">orgânico</span></h3>
+          <div class="csub" id="engTrendSub">últimos 30 dias</div>
+          <div id="ovTrend" style="margin-top:8px"></div>
+        </div>
+        <div class="card">
+          <h3>Alcance orgânico <span class="badge b-fb">Facebook</span></h3>
+          <div class="csub">quanto do alcance total vem sem impulsionar</div>
+          <div class="donut-card" style="margin-top:10px" id="ovDonut"></div>
+        </div>
+      </div>
+      <div class="grid g2">
+        <div class="card decision">
+          <div class="dh"><span class="tag">decisão</span><h3 style="margin:0">Vale impulsionar?</h3></div>
+          <div id="snBars" style="margin-top:8px"></div>
+          <div class="snleg"><span><i style="background:var(--purple)"></i>Orgânico</span><span><i style="background:#C3C7D2"></i>Pago</span></div>
+        </div>
+        <div class="card decision">
+          <div class="dh"><span class="tag">decisão</span><h3 style="margin:0">Qual formato engaja mais?</h3></div>
+          <div id="fmtBars" style="margin-top:8px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RETENÇÃO -->
+    <section class="view" data-view="retencao">
+      <div class="grid g4 mb" id="retKpis"></div>
+      <div class="grid g2 mb">
+        <div class="card"><h3>Retenção de vídeo <span class="badge b-org">orgânico</span></h3><div class="funnel" id="funnel" style="margin-top:10px"></div></div>
+        <div class="card"><h3>Onde a atenção quebra <span class="badge b-org">orgânico</span></h3><div id="dropoff" style="margin-top:10px"></div></div>
+      </div>
+      <div class="card"><h3>Retenção de vídeo por formato</h3><div id="watchByFmt" style="margin-top:8px"></div></div>
+    </section>
+
+    <!-- ENGAJAMENTO -->
+    <section class="view" data-view="engajamento">
+      <div class="grid g3 mb" id="engKpis"></div>
+      <div class="grid g12 mb">
+        <div class="card"><h3>Composição</h3><div class="csub">o que pesa mais no engajamento</div><div id="engMix" style="margin-top:8px"></div></div>
+        <div class="card"><h3>Taxa de engajamento <span class="badge b-org">orgânico</span></h3><div class="csub" id="engTrend2Sub">últimos 30 dias</div><div id="engTrend2" style="margin-top:8px"></div></div>
+      </div>
+      <div class="card"><h3>Alcance × engajamento por post</h3><div class="csub">quem sobe nos dois eixos entrega valor; canto direito-baixo é vaidade</div><div id="scatter" style="margin-top:6px"></div></div>
+    </section>
+
+    <!-- COMUNIDADE -->
+    <section class="view" data-view="comunidade">
+      <div class="grid g3 mb" id="commKpis"></div>
+      <div class="card"><h3>Onde está a conversa <span class="badge b-fb">Facebook</span></h3><div id="convoByPost" style="margin-top:10px"></div></div>
+    </section>
+
+    <!-- CONTEÚDO -->
+    <section class="view" data-view="conteudo">
+      <div class="tablewrap">
+        <table id="postTable">
+          <thead><tr>
+            <th class="l">Post</th>
+            <th data-k="reachOrg">Alcance</th>
+            <th data-k="share">Compart.</th>
+            <th data-k="save">Salvos</th>
+            <th data-k="watch">Retenção</th>
+            <th class="act" data-k="eng">Engajamento</th>
+            <th class="l" data-k="boost">Impulsionar?</th>
+          </tr></thead>
+          <tbody id="postBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= GOOGLE ADS ================= -->
+    <!-- G · VISÃO GERAL -->
+    <section class="view" data-view="g-overview">
+      <div class="grid g4 mb" id="gOvKpis"></div>
+      <div class="grid g21 mb">
+        <div class="card">
+          <h3>ROAS <span class="badge b-g">Google Ads</span></h3>
+          <div class="csub" id="gRoasSub">últimos 30 dias · receita atribuída ÷ investimento</div>
+          <div id="gRoasTrend" style="margin-top:8px"></div>
+        </div>
+        <div class="card">
+          <h3>Para onde vai a verba</h3>
+          <div class="csub">investimento por tipo de campanha</div>
+          <div id="gMix" style="margin-top:8px"></div>
+        </div>
+      </div>
+      <div class="grid g2">
+        <div class="card decision">
+          <div class="dh"><span class="tag">decisão</span><h3 style="margin:0">Onde escalar verba?</h3></div>
+          <div class="csub">ROAS por tipo de campanha</div>
+          <div id="gRoasType" style="margin-top:4px"></div>
+          <div class="gnote"><b>YouTube</b> é awareness, então ROAS baixo é esperado. Avalie em <b>Vídeo</b> e <b>Alcance</b>.</div>
+        </div>
+        <div class="card decision">
+          <div class="dh"><span class="tag">decisão</span><h3 style="margin:0">Quem traz cliente à loja mais barato?</h3></div>
+          <div class="csub">custo por visita à loja · menor é melhor</div>
+          <div id="gVisitType" style="margin-top:4px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- G · CAMPANHAS -->
+    <section class="view" data-view="g-campanhas">
+      <div class="tablewrap">
+        <table id="gCampTable">
+          <thead><tr>
+            <th class="l">Campanha</th>
+            <th data-k="spend">Invest.</th>
+            <th data-k="impr">Impr.</th>
+            <th data-k="ctr">CTR</th>
+            <th data-k="cpc">CPC</th>
+            <th data-k="conv">Conv.</th>
+            <th data-k="cpa">CPA</th>
+            <th class="act" data-k="roas">ROAS</th>
+            <th class="l" data-k="rec">Recomendação</th>
+          </tr></thead>
+          <tbody id="gCampBody"></tbody>
+        </table>
+      </div>
+      <div class="gnote">Regra de recomendação. <b>Conversão:</b> ROAS ≥ 4 → escalar; ≥ 2 → manter; abaixo disso → revisar. <b>Awareness:</b> frequência &gt; 5 → revisar frequência; caso contrário → manter.</div>
+    </section>
+
+    <!-- G · VÍDEO -->
+    <section class="view" data-view="g-video">
+      <div class="grid g4 mb" id="gVidKpis"></div>
+      <div class="grid g2 mb">
+        <div class="card"><h3>Até onde assistem <span class="badge b-g">YouTube</span></h3><div class="csub">quartis de visualização · % das impressões</div><div class="funnel" id="gQuart" style="margin-top:10px"></div></div>
+        <div class="card"><h3>Assistiram até o fim, por criativo</h3><div class="csub">% que chegou a 100% do vídeo</div><div id="gP100" style="margin-top:6px"></div></div>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th class="l">Criativo</th><th>Impr.</th><th>Views</th><th>Taxa de visualização</th><th>CPV</th><th>Quartis 25·50·75·100</th></tr></thead>
+          <tbody id="gCreBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- G · ALCANCE -->
+    <section class="view" data-view="g-alcance">
+      <div class="grid g4 mb" id="gAlcKpis"></div>
+      <div class="grid g2">
+        <div class="card"><h3>Frequência por campanha</h3><div class="csub">impressões ÷ alcance único · zona ideal 2–4</div><div id="gFreqCamp" style="margin-top:6px"></div>
+          <div class="gnote">Acima de <b>5</b> há risco de saturação. Remarketing tolera frequência maior.</div></div>
+        <div class="card"><h3>CPM por campanha</h3><div class="csub">custo por mil impressões · menor é melhor</div><div id="gCpmCamp" style="margin-top:4px"></div></div>
+      </div>
+      <div class="gnote">Campanhas de awareness: YouTube, Demand Gen e Display. PMax fica fora porque não expõe alcance único. O alcance total é <b>deduplicado</b> e não é a soma das campanhas.</div>
+    </section>
+
+    <!-- G · CONVERSÕES & LOJA -->
+    <section class="view" data-view="g-conversoes">
+      <div class="grid g4 mb" id="gConvKpis"></div>
+      <div class="card mb"><h3>Funil de mídia <span class="badge b-g">Google Ads</span></h3><div class="csub">todas as campanhas · período selecionado</div><div class="mfun" id="gMediaFunnel"></div></div>
+      <div class="grid g12">
+        <div class="card"><h3>Conversões por ação</h3><div class="csub">o que conta como conversão</div><div id="gConvAction" style="margin-top:6px"></div></div>
+        <div class="card"><h3>Visitas à loja por campanha</h3><div id="gVisitCamp" style="margin-top:10px"></div></div>
+      </div>
+    </section>
+
+    <footer>
+      <span id="foot1">Fonte: BigQuery · Fivetran (Facebook Graph API) · página 1465666733744266</span>
+      <span id="foot2">Protótipo — séries simuladas a partir dos valores reais</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ================= helpers ================= */
+const br=n=>Math.round(n).toLocaleString('pt-BR');
+const c=(x,d=1)=>Number(x).toFixed(d).replace('.',',');
+function chip(cur,prev,{pp=false,goodDir='up'}={}){
+  const diff=cur-prev, rel=prev?diff/prev*100:0;
+  const good=goodDir==='up'?diff>=0:diff<=0, neu=Math.abs(diff)<1e-9;
+  const arrow=diff>0?'▲':diff<0?'▼':'▬', cls=(neu||goodDir==='none')?'neu':good?'pos':'neg';
+  const txt=pp?(diff>=0?'+':'')+c(diff,1)+' pp':(rel>=0?'+':'')+c(rel,1)+'%';
+  return `<span class="chip ${cls}">${arrow} ${txt}</span>`;
+}
+function genSeries(cur,start,n){
+  const out=[];for(let i=0;i<n;i++){const t=n>1?i/(n-1):1;const base=start+(cur-start)*t;
+    const wig=Math.sin(i*1.35+cur)*((Math.abs(cur-start)||cur*0.05)*0.14);out.push(base+wig);}
+  out[n-1]=cur;return out;
+}
+function spark(vals,w=190,h=40,col='var(--purple)'){
+  const mn=Math.min(...vals),mx=Math.max(...vals),r=(mx-mn)||1,st=w/(vals.length-1);
+  const pts=vals.map((v,i)=>[i*st,h-4-((v-mn)/r)*(h-9)]);
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">
+    <path d="${d} L ${w} ${h} L 0 ${h} Z" fill="${col}" opacity=".07"/>
+    <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${pts.at(-1)[0]}" cy="${pts.at(-1)[1]}" r="3" fill="${col}"/></svg>`;
+}
+function smooth(pts){let d='M'+pts[0][0]+' '+pts[0][1];
+  for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],cx=(a[0]+b[0])/2;
+    d+=` C ${cx} ${a[1]}, ${cx} ${b[1]}, ${b[0]} ${b[1]}`;}return d;}
+function areaChart(vals,labels,{w=560,h=210,col='var(--purple)',unit='%'}={}){
+  const padL=6,padR=8,padT=16,padB=26;
+  const mn=Math.min(...vals)*0.96,mx=Math.max(...vals)*1.04,r=(mx-mn)||1;
+  const sx=i=>padL+i*((w-padL-padR)/(vals.length-1)),sy=v=>padT+(1-(v-mn)/r)*(h-padT-padB);
+  const pts=vals.map((v,i)=>[sx(i),sy(v)]);
+  const line=smooth(pts),area=`${line} L ${sx(vals.length-1)} ${h-padB} L ${padL} ${h-padB} Z`;
+  const grid=[0,.33,.66,1].map(g=>{const y=padT+g*(h-padT-padB);return `<line x1="${padL}" x2="${w-padR}" y1="${y}" y2="${y}" stroke="var(--line)"/>`}).join('');
+  const dots=pts.map((p,i)=>i%Math.ceil(vals.length/6)===0||i===vals.length-1?`<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="#fff" stroke="${col}" stroke-width="2"/>`:'').join('');
+  const last=pts.at(-1);
+  const lab=labels.map((l,i)=>`<text x="${sx(i)}" y="${h-7}" class="axl" text-anchor="${i===0?'start':i===labels.length-1?'end':'middle'}">${l}</text>`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%">
+    <defs><linearGradient id="ag" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".22"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    ${grid}<path d="${area}" fill="url(#ag)"/><path d="${line}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>${dots}
+    <circle cx="${last[0]}" cy="${last[1]}" r="4.5" fill="${col}"/>
+    <text x="${last[0]-4}" y="${last[1]-10}" text-anchor="end" class="axl" style="fill:var(--ink);font-family:var(--disp);font-weight:700;font-size:12px">${c(vals.at(-1))}${unit}</text>
+    ${lab}</svg>`;
+}
+function donut(pct,col='var(--purple)'){
+  const R=46,C=2*Math.PI*R,off=C*(1-pct/100);
+  return `<svg viewBox="0 0 120 120" width="132" height="132">
+    <circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--track)" stroke-width="13"/>
+    <circle cx="60" cy="60" r="${R}" fill="none" stroke="${col}" stroke-width="13" stroke-linecap="round"
+      stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset .8s cubic-bezier(.2,.7,.2,1)"/>
+    <text x="60" y="68" text-anchor="middle" class="donut-n">${c(pct,0)}%</text></svg>`;
+}
+function kpiCard(o){
+  const bl={org:'orgânico',fb:'Facebook',ig:'Instagram',g:'Google Ads'};
+  const badges=(o.badges||[]).map(b=>`<span class="badge b-${b}">${bl[b]}</span>`).join('');
+  if(o.nd) return `<div class="card kpi nd"><div class="k-top"><span class="k-name">${o.name}</span>${badges}</div>
+    <div class="val num">N/D</div><div class="nd-note">${o.ndNote}</div></div>`;
+  return `<div class="card kpi"><div class="k-top"><span class="k-name">${o.name}</span>${badges}</div>
+    <div class="val num">${o.val}${o.unit?`<span class="u">${o.unit}</span>`:''}</div>
+    <div class="foot">${chip(o.cur,o.prev,o.opt||{})}<span>${o.prevLabel}</span></div>
+    ${o.series?`<div class="spark">${spark(o.series,190,38,o.col||'var(--purple)')}</div>`:''}</div>`;
+}
+
+/* ================= dados (reais como âncora + simulados) ================= */
+const R={videoViewsOrg:3904,complete30sOrg:260,views15s:785,autoplay:3421,avgWatchMs:3447,lengthMs:28945};
+const FMT=[
+ {n:'Reels',reach:41200,watch:52,save:4.1,share:2.6,eng:5.9,engPrev:5.2,col:'var(--purple)'},
+ {n:'Carrossel',reach:28900,watch:null,save:3.4,share:1.9,eng:4.6,engPrev:4.4,col:'var(--purple-soft)'},
+ {n:'Vídeo link',reach:15600,watch:37,save:2.8,share:1.6,eng:3.8,engPrev:3.6,col:'var(--purple-soft)'},
+ {n:'Imagem',reach:33500,watch:null,save:2.1,share:1.2,eng:3.1,engPrev:3.3,col:'#C3C7D2'},
+];
+const posts=[
+ {t:'Black Week — corredores',fmt:'Reels',msg:'Preço baixo de verdade, é só na Black Week…',reachOrg:41200,share:2.6,save:4.1,watch:52,eng:5.9,comments:412},
+ {t:'Açougue & hortifrúti',fmt:'Carrossel',msg:'Do açougue ao hortifrúti, passando pela padaria…',reachOrg:28900,share:1.9,save:3.4,watch:null,eng:4.6,comments:168},
+ {t:'Prêmio ReclameAqui',fmt:'Imagem',msg:'#PremioReclameAqui2025 — obrigado por confiarem…',reachOrg:33500,share:1.2,save:2.1,watch:null,eng:3.1,comments:97},
+ {t:'Receita de fim de semana',fmt:'Reels',msg:'Bora pra cozinha? Testa essa e economiza…',reachOrg:22100,share:2.1,save:5.2,watch:44,eng:5.2,comments:243},
+ {t:'Ofertas da semana',fmt:'Carrossel',msg:'Ofertas válidas até domingo em todas as lojas…',reachOrg:19800,share:0.9,save:1.4,watch:null,eng:2.4,comments:54},
+ {t:'Bastidores da loja',fmt:'Vídeo',msg:'Como o Parceirão prepara o estoque…',reachOrg:15600,share:1.6,save:2.8,watch:37,eng:3.8,comments:131},
+];
+posts.forEach(p=>p.boost=(p.eng>=4.5&&p.reachOrg<30000));
+
+/* métricas base (30d). prev muda por período p/ o seletor ser funcional */
+const BASE={
+ reachOrg:{cur:214300,prev:198100,unit:'',big:true,badges:['fb','org']},
+ eng:{cur:4.6,prev:3.9,unit:'%',pp:true,badges:['org']},
+ watch:{cur:48,prev:44,unit:'%',pp:true,badges:['org']},
+ share:{cur:1.9,prev:1.5,unit:'%',pp:true,badges:['fb','org']},
+ assist30:{cur:6.7,prev:5.9,unit:'%',pp:true,badges:['org']},
+ comments:{cur:1284,prev:1150,unit:'',badges:['fb']},
+ follows:{cur:2081,prev:1740,unit:'',prefix:'+',badges:['fb','org']},
+ negSent:{cur:0.24,prev:0.51,unit:'%',pp:true,goodDir:'down',badges:['fb']},
+ organicShare:{cur:29,prev:34,unit:'%'},
+};
+const PCFG={'7':{n:8,scale:.42,label:'7 dias',prev:'vs 7 dias anteriores'},
+            '30':{n:12,scale:1,label:'30 dias',prev:'vs período anterior'},
+            '90':{n:16,scale:2.1,label:'90 dias',prev:'vs 90 dias anteriores'}};
+let period='30';
+
+const compact=n=>n>=1e6?c(n/1e6,1)+' mi':n>=1e3?c(n/1e3,1)+' mil':c(n,0);
+const brl=n=>'R$ '+(n>=1e6?compact(n):n>=100?br(n):n>=1?c(n,2):c(n,3));
+function fmtv(b){
+  if(b.money) return brl(b.cur);
+  if(b.compact) return compact(b.cur);
+  if(b.prefix) return b.prefix+br(b.cur);
+  if(b.big) return br(b.cur);
+  return c(b.cur,b.dec??1);
+}
+function metric(key){
+  const b=BASE[key],cfg=PCFG[period];
+  const prevAdj=b.cur-(b.cur-b.prev)*cfg.scale;         // janela maior = movimento maior
+  const val=fmtv(b);
+  return {cur:b.cur,prev:prevAdj,unit:b.unit,badges:b.badges||[],
+    opt:{pp:b.pp,goodDir:b.goodDir||'up'},prevLabel:cfg.prev,
+    val, series:genSeries(b.cur,prevAdj,cfg.n)};
+}
+function periodLabels(){const n=PCFG[period].n;const step=period==='7'?1:period==='30'?Math.round(30/(n-1)):Math.round(90/(n-1));
+  return Array.from({length:n},(_,i)=>i===0?'—'+ (period==='7'?'7d':period==='30'?'30d':'90d'):(i===n-1?'hoje':''));}
+
+/* ================= render ================= */
+function renderKPIs(){
+  const m=k=>kpiCard({name:kpiName[k],...metric(k),col:kpiCol[k]});
+  document.getElementById('ovKpis').innerHTML=['reachOrg','eng','watch','share'].map(m).join('');
+  document.getElementById('retKpis').innerHTML=[
+    m('watch'),m('assist30'),
+    kpiCard({name:'Salvamentos por alcance',badges:['ig'],nd:true,ndNote:'FB não expõe <b>salvamentos</b> na Graph API. Entra com o Instagram.'}),
+    m('share')].join('');
+  document.getElementById('engKpis').innerHTML=['eng','share','organicShare'].map(m).join('');
+  document.getElementById('commKpis').innerHTML=['comments','follows','negSent'].map(m).join('');
+}
+const kpiName={reachOrg:'Alcance orgânico',eng:'Taxa de engajamento',watch:'Retenção de vídeo',share:'Compartilhamentos por alcance',
+  assist30:'Assistiram até 30s',comments:'Comentários',follows:'Novos seguidores/dia',negSent:'Sentimento negativo',organicShare:'% do alcance que é orgânico'};
+const kpiCol={reachOrg:'var(--purple)',eng:'var(--purple)',watch:'var(--purple-soft)',share:'var(--purple)',assist30:'var(--purple-soft)',
+  comments:'var(--purple)',follows:'var(--purple)',negSent:'var(--neg)',organicShare:'var(--purple)'};
+
+function renderTrends(){
+  const m=metric('eng');
+  document.getElementById('ovTrend').innerHTML=areaChart(m.series,periodLabels(),{w:560,h:210});
+  document.getElementById('engTrend2').innerHTML=areaChart(m.series,periodLabels(),{w:520,h:220});
+  document.getElementById('engTrendSub').textContent='últimos '+PCFG[period].label;
+  document.getElementById('engTrend2Sub').textContent='últimos '+PCFG[period].label;
+  // donut alcance orgânico
+  const os=metric('organicShare');
+  document.getElementById('ovDonut').innerHTML=`<div class="donut-wrap">${donut(BASE.organicShare.cur)}</div>
+    <div class="donut-meta"><div class="val">${chip(os.cur,os.prev,{pp:true})}</div>
+    <div class="txt">O resto vem de impulsionamento. Subir essa fatia = crescer sem depender de verba.</div></div>`;
+}
+function renderStatic(){
+  /* sinal vs ruído */
+  const SN=[{n:'Views de vídeo',sig:2094,noi:52246},{n:'Completos 30s',sig:327,noi:16508}];
+  document.getElementById('snBars').innerHTML=SN.map(d=>{const t=d.sig+d.noi,sp=d.sig/t*100;
+    return `<div class="snbar"><div class="top"><span>${d.n}</span><span class="v">${c(sp,0)}% orgânico</span></div>
+    <div class="track-b"><div class="sig" style="width:${sp}%"></div><div class="noi" style="width:${100-sp}%"></div></div></div>`}).join('');
+  /* formato */
+  const em=6,ec=v=>v>=5?'var(--pos)':v>=3.5?'var(--purple-deep)':'var(--neg)';
+  const F=[...FMT].sort((a,b)=>b.eng-a.eng);
+  document.getElementById('fmtBars').innerHTML=F.map(f=>`<div class="fmtrow"><div class="fn">${f.n}</div>
+    <div class="mbar"><div style="width:${Math.min(f.eng/em*100,100)}%;background:${f.col}">${c(f.eng)}%</div></div>
+    <div class="fsc">${chip(f.eng,f.engPrev,{pp:true})}<b style="color:${ec(f.eng)}">${c(f.eng)}%</b></div></div>`).join('');
+  /* funil */
+  const base=R.videoViewsOrg;
+  const fn=[['Views (3s)',base],['Autoplay',R.autoplay],['15 segundos',R.views15s],['Completo 30s',R.complete30sOrg]];
+  document.getElementById('funnel').innerHTML=fn.map(([l,v])=>{const w=v/base*100;
+    return `<div class="frow"><div class="fl">${l}</div><div class="fbar"><div style="width:${w}%">${w<14?'':c(w,0)+'%'}</div></div><div class="fv">${br(v)}</div></div>`}).join('');
+  /* drop-off */
+  const drop=[100,Math.round(R.views15s/base*100),Math.round(R.complete30sOrg/base*100),Math.round(R.complete30sOrg*0.7/base*100)],dl=['Início','15s','30s','Fim'];
+  (function(){const W=340,H=180,pT=18,pB=26,sx=i=>8+i*((W-16)/3),sy=v=>pT+(100-v)/100*(H-pT-pB);
+    const grid=[0,25,50,75,100].map(g=>`<line x1="8" x2="${W-8}" y1="${sy(g)}" y2="${sy(g)}" stroke="var(--line)"/>`).join('');
+    const path=drop.map((v,i)=>(i?'L':'M')+sx(i)+' '+sy(v)).join(' ');
+    const pts=drop.map((v,i)=>`<circle cx="${sx(i)}" cy="${sy(v)}" r="4" fill="var(--neg)"/><text x="${sx(i)}" y="${sy(v)-9}" class="axl" style="fill:var(--ink);font-family:var(--disp);font-weight:700">${v}%</text>`).join('');
+    const labs=dl.map((l,i)=>`<text x="${sx(i)}" y="${H-7}" class="axl" text-anchor="${i===0?'start':i===3?'end':'middle'}">${l}</text>`).join('');
+    document.getElementById('dropoff').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">${grid}<path d="${path} L ${sx(3)} ${sy(0)} L ${sx(0)} ${sy(0)} Z" fill="var(--neg)" opacity=".07"/><path d="${path}" fill="none" stroke="var(--neg)" stroke-width="2.5" stroke-linejoin="round"/>${pts}${labs}</svg>`;})();
+  /* watch por formato */
+  document.getElementById('watchByFmt').innerHTML=FMT.map(f=>`<div class="statrow"><div class="sl">${f.n}</div>
+    <div class="track-b"><div class="sig" style="width:${f.watch||0}%;background:${f.watch?f.col:'var(--track)'}"></div></div>
+    <div class="sv">${f.watch?f.watch+'%':'<span style="color:var(--muted)">—</span>'}</div></div>`).join('');
+  /* composição */
+  const mix=[{n:'Shares',v:8,c:'var(--purple)'},{n:'Comentários',v:14,c:'var(--purple)'},{n:'Cliques',v:19,c:'var(--purple-soft)'},{n:'Reações',v:59,c:'#C3C7D2'}];
+  document.getElementById('engMix').innerHTML=mix.map(x=>`<div class="statrow"><div class="sl">${x.n}</div>
+    <div class="track-b"><div class="sig" style="width:${x.v}%;background:${x.c}"></div></div><div class="sv">${x.v}%</div></div>`).join('');
+  /* scatter */
+  (function(){const P=[{x:41,y:5.9,r:1,l:'Reels',hl:1},{x:29,y:4.6,r:.6,l:'Carrossel'},{x:33,y:3.1,r:.2,l:'Imagem'},{x:16,y:3.8,r:.4,l:'V.link'},{x:22,y:5.2,r:.7,l:'Receita',hl:1}];
+    const W=560,H=240,pad=36,xm=48,ym=7,sx=x=>pad+x/xm*(W-pad-10),sy=y=>H-pad-y/ym*(H-pad-16);
+    const grid=[0,.25,.5,.75,1].map(g=>`<line x1="${pad}" x2="${W-10}" y1="${sy(ym*g)}" y2="${sy(ym*g)}" stroke="var(--line)"/>`).join('');
+    const zone=`<rect x="${sx(0)}" y="${sy(ym)}" width="${sx(28)-sx(0)}" height="${sy(0)-sy(ym)}" fill="var(--purple)" opacity=".05"/><text x="${sx(0)+6}" y="${sy(ym)+13}" class="axl" style="fill:var(--purple-deep)">valor + margem</text>`;
+    const dots=P.map(p=>`<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="${6+p.r*5}" fill="${p.hl?'var(--purple)':'var(--purple-soft)'}" opacity="${p.hl?.9:.55}"/><text x="${sx(p.x)}" y="${sy(p.y)-9-p.r*5}" class="axl" style="fill:var(--ink)" text-anchor="middle">${p.l}</text>`).join('');
+    document.getElementById('scatter').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%">${grid}${zone}${dots}<text x="${W/2}" y="${H-6}" class="axl" text-anchor="middle">Alcance orgânico (k) →</text><text x="12" y="${H/2}" class="axl" transform="rotate(-90 12 ${H/2})" text-anchor="middle">Engajamento % →</text></svg>`;})();
+  /* conversa */
+  const convo=[...posts].sort((a,b)=>b.comments-a.comments),cMax=Math.max(...convo.map(p=>p.comments)),rate=p=>p.comments/p.reachOrg*1000,rMax=Math.max(...convo.map(rate));
+  document.getElementById('convoByPost').innerHTML=`<div class="convo-head"><span>Post</span><span>Comentários</span><span>por 1k alcance</span></div>
+    ${convo.map(p=>{const rt=rate(p),hot=rt>=rMax*0.75;return `<div class="convo-row"><div class="cn"><span class="fmt">${p.fmt}</span>${p.t}</div>
+      <div class="cbar"><div style="width:${p.comments/cMax*100}%;background:${hot?'var(--purple)':'var(--purple-soft)'}">${p.comments}</div></div>
+      <div class="crate ${hot?'hot':''}">${c(rt,1)}${hot?' <span class="dot">●</span>':''}</div></div>`}).join('')}
+    <div class="convo-note"><span class="dot" style="color:var(--purple)">●</span> conversa acima da média por alcance — priorizar resposta</div>`;
+}
+/* tabela */
+function cell(v,s){return v==null?'<span style="color:var(--muted)">—</span>':c(v,1)+(s||'')}
+function ecolT(v){return v>=4.5?'var(--pos)':v>=3?'var(--purple-deep)':'var(--neg)'}
+function renderTable(k='eng'){
+  posts.sort((a,b)=>k==='boost'?(b.boost-a.boost)||(b.eng-a.eng):(b[k]??-1)-(a[k]??-1));
+  document.getElementById('postBody').innerHTML=posts.map(p=>`<tr>
+    <td class="post"><span class="fmt">${p.fmt}</span>${p.t}<span class="msg">${p.msg}</span></td>
+    <td>${br(p.reachOrg)}</td><td>${cell(p.share,'%')}</td><td>${cell(p.save,'%')}</td><td>${cell(p.watch,'%')}</td>
+    <td style="color:${ecolT(p.eng)}">${cell(p.eng,'%')}</td>
+    <td class="l"><span class="boostflag ${p.boost?'boost-yes':'boost-no'}">${p.boost?'✔ impulsionar':'manter'}</span></td></tr>`).join('');
+  document.querySelectorAll('#postTable th[data-k]').forEach(th=>th.classList.toggle('act',th.dataset.k===k));
+}
+
+/* =====================================================================
+   GOOGLE ADS — dados 100% fictícios (repositório público).
+   Mesma lógica da base agnóstica: só contagens brutas por campanha;
+   taxas (CTR, CPC, CPA, ROAS, CPM, frequência) são derivadas aqui.
+   ===================================================================== */
+const GC=[
+ {n:'PMax | Ofertas da semana',t:'PMax',obj:'conv',spend:142000,impr:18.4e6,clicks:221000,conv:9850,value:710000,visits:14200},
+ {n:'PMax | Black Week',t:'PMax',obj:'conv',spend:98000,impr:12.1e6,clicks:160000,conv:7300,value:560000,visits:9800},
+ {n:'YouTube | In-stream Receitas',t:'YouTube',obj:'aware',spend:52000,impr:6.2e6,clicks:18000,conv:410,value:21000,visits:2100,reach:2.4e6},
+ {n:'YouTube | Shorts Hortifrúti',t:'YouTube',obj:'aware',spend:24000,impr:5.4e6,clicks:7000,conv:90,value:4000,visits:900,reach:2.6e6},
+ {n:'YouTube | Bumper Ofertas',t:'YouTube',obj:'aware',spend:38000,impr:11.5e6,clicks:9000,conv:120,value:6000,visits:1900,reach:2.1e6},
+ {n:'Demand Gen | Hortifrúti & Açougue',t:'Demand Gen',obj:'conv',spend:46000,impr:7.9e6,clicks:95000,conv:2100,value:118000,visits:4300,reach:2.9e6},
+ {n:'Display | Remarketing app',t:'Display',obj:'conv',spend:28000,impr:14.2e6,clicks:42000,conv:1600,value:96000,visits:2400,reach:2.0e6},
+ {n:'Display | Inauguração de lojas',t:'Display',obj:'aware',spend:22000,impr:6.8e6,clicks:25000,conv:380,value:19000,visits:3700,reach:1.9e6},
+];
+GC.forEach(k=>{k.ctr=k.clicks/k.impr*100;k.cpc=k.spend/k.clicks;k.cpa=k.spend/k.conv;k.roas=k.value/k.spend;
+  k.cpm=k.spend/k.impr*1000;k.freq=k.reach?k.impr/k.reach:null;
+  k.rec=k.obj==='conv'?(k.roas>=4?'escalar':k.roas>=2?'manter':'revisar'):(k.freq>5?'revisar frequência':'manter');});
+const GTIPOS=['PMax','YouTube','Demand Gen','Display'];
+const GROAS_PREV={'PMax':4.9,'YouTube':0.28,'Demand Gen':2.4,'Display':2.5};   // ROAS do período anterior por tipo
+const GREACH_UNICO=9.8e6;                                                      // alcance deduplicado (não soma)
+const GCRE=[
+ {n:'Receita da semana · 30s',fmt:'In-stream',impr:3.5e6,views:1.12e6,spend:30000,q:[72,51,38,29]},
+ {n:'Black Week · 15s',fmt:'In-stream',impr:2.7e6,views:0.74e6,spend:22000,q:[70,49,35,27]},
+ {n:'Hortifrúti · 20s',fmt:'Shorts',impr:5.4e6,views:1.62e6,spend:24000,q:[64,42,30,22]},
+ {n:'Ofertas · 6s',fmt:'Bumper',impr:11.5e6,views:null,spend:38000,q:[91,83,77,71]},
+];
+const GACOES=[{n:'Pedidos app/site',v:8900},{n:'Cadastro no clube',v:5150},{n:'Rotas até a loja',v:4640},{n:'Cupons resgatados',v:1900},{n:'Ligações',v:1260}];
+
+/* totais derivados */
+const sum=(arr,k)=>arr.reduce((s,x)=>s+(x[k]||0),0);
+const GT={spend:sum(GC,'spend'),impr:sum(GC,'impr'),clicks:sum(GC,'clicks'),conv:sum(GC,'conv'),value:sum(GC,'value'),visits:sum(GC,'visits')};
+const GAW=GC.filter(k=>k.reach), GYT=GC.filter(k=>k.t==='YouTube');
+const GV=GCRE.filter(x=>x.views);
+const gAwImpr=sum(GAW,'impr'),gAwSpend=sum(GAW,'spend');
+const gViews=sum(GV,'views'),gVtr=gViews/sum(GV,'impr')*100,gCpv=sum(GV,'spend')/gViews;
+const gCpmYt=sum(GYT,'spend')/sum(GYT,'impr')*1000;
+
+Object.assign(BASE,{
+ gSpend:{cur:GT.spend,prev:GT.spend*.92,money:true,goodDir:'none',badges:['g']},
+ gConv:{cur:GT.conv,prev:GT.conv*.86,big:true,badges:['g']},
+ gRoas:{cur:GT.value/GT.spend,prev:GT.value/GT.spend*.94,unit:'x',dec:2,badges:['g']},
+ gCpa:{cur:GT.spend/GT.conv,prev:GT.spend/GT.conv*1.08,money:true,goodDir:'down',badges:['g']},
+ gViews:{cur:gViews,prev:gViews*.8,compact:true,badges:['g']},
+ gVtr:{cur:gVtr,prev:gVtr-2.1,unit:'%',pp:true,badges:['g']},
+ gCpv:{cur:gCpv,prev:gCpv*1.1,money:true,goodDir:'down',badges:['g']},
+ gCpmYt:{cur:gCpmYt,prev:gCpmYt*1.04,money:true,goodDir:'down',badges:['g']},
+ gImpr:{cur:gAwImpr,prev:gAwImpr*.9,compact:true,badges:['g']},
+ gReach:{cur:GREACH_UNICO,prev:GREACH_UNICO*.88,compact:true,badges:['g']},
+ gFreq:{cur:gAwImpr/GREACH_UNICO,prev:gAwImpr/GREACH_UNICO-.4,unit:'x',goodDir:'down',badges:['g']},
+ gCpm:{cur:gAwSpend/gAwImpr*1000,prev:gAwSpend/gAwImpr*1000*1.06,money:true,goodDir:'down',badges:['g']},
+ gVisits:{cur:GT.visits,prev:GT.visits*.9,big:true,badges:['g']},
+ gCpVisit:{cur:GT.spend/GT.visits,prev:GT.spend/GT.visits*1.07,money:true,goodDir:'down',badges:['g']},
+ gConvRate:{cur:GT.conv/GT.clicks*100,prev:GT.conv/GT.clicks*100-.3,unit:'%',pp:true,badges:['g']},
+ gValue:{cur:GT.value,prev:GT.value*.89,money:true,badges:['g']},
+});
+Object.assign(kpiName,{gSpend:'Investimento',gConv:'Conversões',gRoas:'ROAS',gCpa:'Custo por conversão (CPA)',
+  gViews:'Visualizações',gVtr:'Taxa de visualização',gCpv:'Custo por view (CPV)',gCpmYt:'CPM YouTube',
+  gImpr:'Impressões',gReach:'Alcance único',gFreq:'Frequência média',gCpm:'CPM médio',
+  gVisits:'Visitas à loja',gCpVisit:'Custo por visita',gConvRate:'Taxa de conversão',gValue:'Valor de conversão'});
+['gCpa','gCpv','gCpmYt','gFreq','gCpm','gCpVisit'].forEach(k=>kpiCol[k]='var(--purple-soft)');
+
+function renderGoogleKPIs(){
+  const m=k=>kpiCard({name:kpiName[k],...metric(k),col:kpiCol[k]||'var(--purple)'});
+  const put=(id,ks)=>document.getElementById(id).innerHTML=ks.map(m).join('');
+  put('gOvKpis',['gSpend','gConv','gRoas','gCpa']);
+  put('gVidKpis',['gViews','gVtr','gCpv','gCpmYt']);
+  put('gAlcKpis',['gImpr','gReach','gFreq','gCpm']);
+  put('gConvKpis',['gVisits','gCpVisit','gConvRate','gValue']);
+  document.getElementById('gRoasTrend').innerHTML=areaChart(metric('gRoas').series,periodLabels(),{w:560,h:210,unit:'x'});
+  document.getElementById('gRoasSub').textContent='últimos '+PCFG[period].label+' · receita atribuída ÷ investimento';
+  /* funil de mídia escala com o período */
+  const s=PCFG[period].scale, st=(l,v)=>`<div class="mstep"><div class="l">${l}</div><div class="v">${v}</div></div>`,
+        ar=(l,v)=>`<div class="marrow"><b>${v}</b>${l}</div>`;
+  document.getElementById('gMediaFunnel').innerHTML=
+    st('Impressões',compact(GT.impr*s))+ar('CTR',c(GT.clicks/GT.impr*100,2)+'%')+
+    st('Cliques',compact(GT.clicks*s))+ar('tx. conv.',c(GT.conv/GT.clicks*100,1)+'%')+
+    st('Conversões',compact(GT.conv*s))+ar('ROAS',c(GT.value/GT.spend,2)+'x')+
+    st('Valor de conversão',brl(GT.value*s));
+}
+
+function renderGoogleStatic(){
+  const byT=t=>GC.filter(k=>k.t===t), tot=(t,k)=>sum(byT(t),k);
+  /* mix de verba */
+  document.getElementById('gMix').innerHTML=GTIPOS.map(t=>{const v=tot(t,'spend'),p=v/GT.spend*100;
+    return `<div class="statrow"><div class="sl">${t}<div style="font-size:11px;color:var(--muted);font-weight:400">${brl(v)}</div></div>
+    <div class="track-b"><div class="sig" style="width:${p}%"></div></div><div class="sv">${c(p,0)}%</div></div>`}).join('');
+  /* ROAS por tipo */
+  const ec=v=>v>=4?'var(--pos)':v>=2?'var(--purple-deep)':'var(--neg)';
+  const RT=GTIPOS.map(t=>({t,r:tot(t,'value')/tot(t,'spend')})).sort((a,b)=>b.r-a.r);
+  document.getElementById('gRoasType').innerHTML=RT.map(x=>`<div class="fmtrow"><div class="fn">${x.t}</div>
+    <div class="mbar"><div style="width:${Math.max(Math.min(x.r/6*100,100),4)}%;background:${x.t==='YouTube'?'#C3C7D2':'var(--purple)'}">${x.r>=1?c(x.r,1)+'x':''}</div></div>
+    <div class="fsc">${chip(x.r,GROAS_PREV[x.t])}<b style="color:${ec(x.r)}">${c(x.r,1)}x</b></div></div>`).join('');
+  /* custo por visita por tipo */
+  const VT=GTIPOS.map(t=>({t,v:tot(t,'spend')/tot(t,'visits')})).sort((a,b)=>a.v-b.v), vMax=Math.max(...VT.map(x=>x.v));
+  document.getElementById('gVisitType').innerHTML=VT.map((x,i)=>`<div class="fmtrow"><div class="fn">${x.t}</div>
+    <div class="mbar"><div style="width:${x.v/vMax*100}%;background:${i===0?'var(--pos)':'var(--purple-soft)'}"></div></div>
+    <div class="fsc"><b style="color:${i===0?'var(--pos)':'var(--ink)'}">R$ ${c(x.v,2)}</b></div></div>`).join('');
+  /* vídeo: quartis ponderados por impressões */
+  const wImp=sum(GCRE,'impr'), Q=[0,1,2,3].map(i=>GCRE.reduce((s,x)=>s+x.q[i]*x.impr,0)/wImp);
+  document.getElementById('gQuart').innerHTML=[['Impressões',100],['25%',Q[0]],['50%',Q[1]],['75%',Q[2]],['100%',Q[3]]]
+    .map(([l,v])=>`<div class="frow"><div class="fl">${l}</div><div class="fbar"><div style="width:${v}%">${c(v,0)}%</div></div><div class="fv">${compact(wImp*v/100)}</div></div>`).join('');
+  const P=[...GCRE].sort((a,b)=>b.q[3]-a.q[3]);
+  document.getElementById('gP100').innerHTML=P.map(x=>`<div class="statrow"><div class="sl">${x.n}<div style="font-size:11px;color:var(--muted);font-weight:400">${x.fmt}</div></div>
+    <div class="track-b"><div class="sig" style="width:${x.q[3]}%"></div></div><div class="sv">${x.q[3]}%</div></div>`).join('')+
+    `<div class="gnote">O <b>bumper de 6s</b> lidera por ser curto. Compare criativos do mesmo formato.</div>`;
+  document.getElementById('gCreBody').innerHTML=GCRE.map(x=>`<tr>
+    <td class="post"><span class="fmt">${x.fmt}</span>${x.n}</td><td>${compact(x.impr)}</td>
+    <td>${x.views?compact(x.views):'<span style="color:var(--muted)">—</span>'}</td>
+    <td>${x.views?c(x.views/x.impr*100,1)+'%':'<span style="color:var(--muted)">—</span>'}</td>
+    <td>${x.views?'R$ '+c(x.spend/x.views,3):'<span style="color:var(--muted)">—</span>'}</td>
+    <td><div class="qbars">${x.q.map(v=>`<i title="${v}%"><span style="height:${v}%"></span></i>`).join('')}</div></td></tr>`).join('');
+  /* alcance: frequência e CPM por campanha */
+  const fcol=f=>f>5?'var(--neg)':f>=2&&f<=4?'var(--pos)':'var(--purple-soft)';
+  document.getElementById('gFreqCamp').innerHTML=[...GAW].sort((a,b)=>b.freq-a.freq).map(k=>`<div class="statrow"><div class="sl" style="min-width:170px">${k.n.split(' | ')[1]}<div style="font-size:11px;color:var(--muted);font-weight:400">${k.t}</div></div>
+    <div class="track-b"><div class="sig" style="width:${Math.min(k.freq/8*100,100)}%;background:${fcol(k.freq)}"></div></div><div class="sv" style="color:${fcol(k.freq)}">${c(k.freq,1)}</div></div>`).join('');
+  const cMax=Math.max(...GAW.map(k=>k.cpm));
+  document.getElementById('gCpmCamp').innerHTML=[...GAW].sort((a,b)=>a.cpm-b.cpm).map(k=>`<div class="fmtrow" style="grid-template-columns:150px 1fr 70px"><div class="fn" style="font-size:12px">${k.n.split(' | ')[1]}</div>
+    <div class="mbar"><div style="width:${k.cpm/cMax*100}%;background:var(--purple-soft)"></div></div><div class="fsc"><b style="font-size:14px">R$ ${c(k.cpm,2)}</b></div></div>`).join('');
+  /* conversões por ação */
+  const aT=sum(GACOES,'v');
+  document.getElementById('gConvAction').innerHTML=GACOES.map(a=>`<div class="statrow"><div class="sl" style="min-width:130px">${a.n}<div style="font-size:11px;color:var(--muted);font-weight:400">${br(a.v)}</div></div>
+    <div class="track-b"><div class="sig" style="width:${a.v/aT*100}%"></div></div><div class="sv">${c(a.v/aT*100,0)}%</div></div>`).join('');
+  /* visitas por campanha */
+  const V=[...GC].sort((a,b)=>b.visits-a.visits),vM=V[0].visits,cpv=k=>k.spend/k.visits,best=[...GC].map(cpv).sort((a,b)=>a-b)[1];
+  document.getElementById('gVisitCamp').innerHTML=`<div class="convo-head"><span>Campanha</span><span>Visitas</span><span>custo/visita</span></div>
+    ${V.map(k=>{const hot=cpv(k)<=best;return `<div class="convo-row"><div class="cn"><span class="fmt">${k.t}</span>${k.n.split(' | ')[1]}</div>
+    <div class="cbar"><div style="width:${k.visits/vM*100}%;background:${hot?'var(--purple)':'var(--purple-soft)'}">${k.visits/vM>=.3?br(k.visits):''}</div></div>
+    <div class="crate ${hot?'hot':''}">R$ ${c(cpv(k),2)}${hot?' <span class="dot">●</span>':''}</div></div>`}).join('')}
+    <div class="convo-note"><span class="dot" style="color:var(--purple)">●</span> menor custo por visita: candidatas a receber mais verba local</div>`;
+}
+
+function renderGoogleTable(k='roas'){
+  const recOrd={'escalar':3,'manter':2,'revisar frequência':1,'revisar':0};
+  const lowFirst=['cpc','cpa'].includes(k);
+  GC.sort((a,b)=>k==='rec'?recOrd[b.rec]-recOrd[a.rec]:lowFirst?a[k]-b[k]:b[k]-a[k]);
+  const rc=r=>r==='escalar'?'rec-up':r==='manter'?'rec-mid':'rec-down';
+  document.getElementById('gCampBody').innerHTML=GC.map(x=>`<tr>
+    <td class="post"><span class="fmt">${x.t}</span>${x.n.split(' | ')[1]}${x.obj==='aware'?'<span class="tag-aw">awareness</span>':''}</td>
+    <td>${brl(x.spend)}</td><td>${compact(x.impr)}</td><td>${c(x.ctr,2)}%</td><td>R$ ${c(x.cpc,2)}</td>
+    <td>${br(x.conv)}</td><td class="${x.obj==='aware'?'muted':''}">R$ ${c(x.cpa,2)}</td>
+    <td class="${x.obj==='aware'?'muted':''}" style="${x.obj==='conv'?'color:'+(x.roas>=4?'var(--pos)':x.roas>=2?'var(--purple-deep)':'var(--neg)'):''}">${c(x.roas,2)}x</td>
+    <td class="l"><span class="rec ${rc(x.rec)}">${x.rec}</span></td></tr>`).join('');
+  document.querySelectorAll('#gCampTable th[data-k]').forEach(th=>th.classList.toggle('act',th.dataset.k===k));
+}
+
+/* ================= init + eventos ================= */
+function renderDynamic(){renderKPIs();renderTrends();renderGoogleKPIs();}
+renderDynamic();renderStatic();renderTable();renderGoogleStatic();renderGoogleTable();
+
+const titles={overview:'Visão geral',retencao:'Retenção',engajamento:'Engajamento',comunidade:'Comunidade',conteudo:'Conteúdo',
+  'g-overview':'Visão geral','g-campanhas':'Campanhas','g-video':'Vídeo (YouTube)','g-alcance':'Alcance','g-conversoes':'Conversões & loja'};
+const PAGES={
+  fb:{crumb:'Facebook · Atacadão SA',
+      banner:'<b>Instagram ainda não conectado.</b> Métricas de IG (salvamentos, alcance de perfil, Reels) entram quando o pipeline for extraído.',
+      sync:'Sincronização Fivetran · há 3 h',
+      foot1:'Fonte: BigQuery · Fivetran (Facebook Graph API) · página 1465666733744266',
+      foot2:'Protótipo — séries simuladas a partir dos valores reais'},
+  g:{crumb:'Google Ads · Atacadão SA',
+     banner:'<b>Dados fictícios.</b> O conector Google Ads (Fivetran → BigQuery) ainda não foi ligado; os números servem só para validar o layout.',
+     sync:'PMax · YouTube · Demand Gen · Display',
+     foot1:'Fonte prevista: BigQuery · Fivetran (Google Ads API)',
+     foot2:'Protótipo — dados 100% simulados'},
+};
+function showView(v){
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('on',x.dataset.view===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.dataset.view===v));
+  document.getElementById('viewTitle').textContent=titles[v];window.scrollTo({top:0,behavior:'smooth'});
+}
+function showPage(p){
+  document.querySelectorAll('.page-btn').forEach(x=>x.classList.toggle('on',x.dataset.page===p));
+  document.querySelectorAll('.navset').forEach(n=>n.hidden=n.dataset.page!==p);
+  const P=PAGES[p];
+  document.getElementById('crumb').textContent=P.crumb;
+  document.getElementById('bannerTxt').innerHTML=P.banner;
+  document.getElementById('bannerSync').textContent=P.sync;
+  document.getElementById('foot1').textContent=P.foot1;
+  document.getElementById('foot2').textContent=P.foot2;
+  showView(document.querySelector(`.navset[data-page="${p}"] .nav-btn`).dataset.view);
+}
+document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+document.querySelectorAll('#period button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#period button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  period=b.dataset.p;renderDynamic();
+}));
+document.querySelectorAll('#postTable th[data-k]').forEach(th=>th.addEventListener('click',()=>renderTable(th.dataset.k)));
+document.querySelectorAll('#gCampTable th[data-k]').forEach(th=>th.addEventListener('click',()=>renderGoogleTable(th.dataset.k)));
+document.querySelectorAll('.page-btn').forEach(b=>b.addEventListener('click',()=>{
+  if(b.classList.contains('soon'))return;
+  showPage(b.dataset.page);
+}));
+</script>
